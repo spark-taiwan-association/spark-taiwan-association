@@ -303,6 +303,52 @@
 html {
     scroll-behavior: smooth;
 }
+        /* === 榮耀放映館：SPARK 科技綠版本 === */
+:root {
+    --cinema-glow: #81D8D0;
+    --cinema-bg: #000000;
+}
+
+/* 重新定義放映螢幕邊框 */
+.cinema-screen {
+    border: 4px solid #333;
+    box-shadow: 0 0 30px rgba(129, 216, 208, 0.2); /* 改為綠色光暈 */
+}
+
+/* 讓字幕變成蒂芬妮綠 */
+.subtitle-text {
+    border-bottom: 2px solid var(--cinema-glow) !important;
+    color: var(--cinema-glow) !important;
+    background: rgba(0, 0, 0, 0.85);
+}
+
+/* 改裝控制台按鈕 */
+.dial-button::after {
+    background: var(--cinema-glow) !important; /* 旋鈕指針改綠色 */
+}
+
+/* 改裝放映機鏡頭光束 */
+.lens-glow {
+    background: var(--cinema-glow) !important;
+    box-shadow: 0 0 30px var(--cinema-glow) !important;
+}
+
+.cinema-beam-fixed {
+    background: radial-gradient(ellipse at right, rgba(129, 216, 208, 0.15) 0%, transparent 80%) !important;
+}
+
+/* 底部按鈕風格統一 */
+.info-lightbox {
+    border: 2px solid var(--cinema-glow) !important;
+}
+.info-lightbox button {
+    border-color: var(--cinema-glow) !important;
+    color: var(--cinema-glow) !important;
+}
+.info-lightbox button:hover {
+    background: var(--cinema-glow) !important;
+    color: #000 !important;
+}
     </style>
 </head>
 <body>
@@ -315,7 +361,7 @@ html {
             <a href="#" class="hover:text-[var(--spark-blue)] transition">首頁</a>
             <a href="#about" class="hover:text-[var(--spark-blue)] transition">協會理念</a>
             <a href="#competitions" class="hover:text-[var(--spark-blue)] transition">三大賽事</a>
-            <a href="#honors" class="hover:text-[var(--spark-blue)] transition">榮耀推廣</a>
+            <a href="#honors" class="hover:text-[var(--spark-blue)] transition">榮耀時光放映館</a>
             <a href="#contact" class="hover:text-[var(--spark-blue)] transition">聯絡我們</a>
         </div>
     </nav>
@@ -380,28 +426,60 @@ html {
     </div>
 </section>
 
-    <section class="content-section" id="honors">
-        <h2 class="section-title">榮耀推廣</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
-            <div class="p-8 bg-black border border-gray-800 text-center rounded-xl">
-                <div class="text-4xl font-bold text-[var(--tech-gold)]">500+</div>
-                <div class="text-xs text-gray-500 mt-2">合作學校</div>
+   <section id="honors" class="py-20 bg-black relative">
+    <header class="text-center pb-10">
+        <h2 class="section-title">THE GLORY MOMENTS</h2>
+        <p class="text-[#81D8D0] tracking-widest text-sm uppercase">榮耀時光放映館</p>
+    </header>
+
+    <div class="container mx-auto px-4">
+        <div class="cinema-screen-container">
+            <div class="projector-unit-fixed">
+                <div class="projector-machine">
+                    <div class="reel reel-top"></div>
+                    <div class="reel reel-back"></div>
+                    <div class="machine-lens">
+                        <div class="lens-glow"></div>
+                        <div class="cinema-beam-fixed"></div>
+                    </div>
+                </div>
+                <div class="tripod-stand">
+                    <div class="leg l-1"></div><div class="leg l-2"></div><div class="leg l-3"></div>
+                </div>
             </div>
-            <div class="p-8 bg-black border border-gray-800 text-center rounded-xl">
-                <div class="text-4xl font-bold text-[var(--tech-gold)]">10,000+</div>
-                <div class="text-xs text-gray-500 mt-2">參賽人數</div>
+
+            <div class="cinema-screen" id="projector-screen">
+                <div class="screen-texture"></div>
+                <img src="wro1.jpg" class="slide-img active" data-caption="2019年馬來西亞足球機器人國際公開賽" alt="wro1">
+                <img src="wro2.jpg" class="slide-img" data-caption="2018 WRO 臺灣全國總決賽" alt="wro2">
+                <img src="wro3.jpg" class="slide-img" data-caption="2018 WRO 世界賽" alt="wro3">
+                <img src="wro4.jpg" class="slide-img" data-caption="2018 WRO 世界決賽" alt="wro4">
+                <img src="wro5.jpg" class="slide-img" data-caption="2018 亞洲機器人運動競賽" alt="wro5">
+                <img src="wro6.jpg" class="slide-img" data-caption="2019 亞洲智慧型機器人大賽" alt="wro6">
+                <img src="wro7.jpg" class="slide-img" data-caption="各項獎盃展示" alt="wro7">
+                
+                <div class="subtitle-container">
+                    <span id="target-subtitle" class="subtitle-text">2019年馬來西亞足球機器人國際公開賽</span>
+                </div>
             </div>
-            <div class="p-8 bg-black border border-gray-800 text-center rounded-xl">
-                <div class="text-4xl font-bold text-[var(--tech-gold)]">30+</div>
-                <div class="text-xs text-gray-500 mt-2">國際獲獎</div>
-            </div>
-            <div class="p-8 bg-black border border-gray-800 text-center rounded-xl">
-                <div class="text-4xl font-bold text-[var(--tech-gold)]">2026</div>
-                <div class="text-xs text-gray-500 mt-2">年度賽季</div>
+
+            <div class="control-deck">
+                <div class="dial-unit">
+                    <div class="dial-label">PREV</div>
+                    <button class="dial-button btn-prev" onclick="changeSlide(-1)"></button>
+                </div>
+                <div class="dial-unit">
+                    <div class="dial-label" style="color:#81D8D0">LIVE</div>
+                    <div class="w-2 h-2 bg-[#81D8D0] rounded-full mx-auto my-3 animate-pulse"></div>
+                </div>
+                <div class="dial-unit">
+                    <div class="dial-label">NEXT</div>
+                    <button class="dial-button btn-next" onclick="changeSlide(1)"></button>
+                </div>
             </div>
         </div>
-        <section id="contact" class="contact-section">
-    <div class="container">
+    </div>
+</section>
         <h2 class="section-title">聯絡我們</h2>
         
         <div class="social-container">

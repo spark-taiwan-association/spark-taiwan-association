@@ -292,26 +292,29 @@
     filter: drop-shadow(0 0 50px rgba(129, 216, 208, 1)) contrast(1.1);
     transform: scale(1.1) rotate(2deg); /* 帶一點點傾斜，更有動態感 */
 }
-/* 強制啟動器：確保背景百分之百不透明 */
+/* 強制開啟選單時的狀態 */
 #mobile-menu.active {
     transform: translateX(0) !important;
     opacity: 1 !important;
-    background-color: #000000 !important; /* 強制純黑背景 */
+    background-color: #000000 !important; /* 強制純黑背景，解決透明混亂 */
+    pointer-events: auto !important;     /* 允許點擊 */
     display: flex !important;
 }
 
-/* 讓選單文字帶有強烈的發光感，在純黑背景下更清晰 */
-.mobile-link {
-    color: #ffffff !important;
-    text-shadow: 0 0 15px rgba(129, 216, 208, 0.8); /* 增加蒂芬妮綠發光 */
-    letter-spacing: 6px;
-    font-family: 'Orbitron', sans-serif; /* 建議使用與標題相同的字體 */
+/* 確保叉叉按鈕永遠在最前面且顏色鮮明 */
+#menu-btn {
+    transition: transform 0.3s ease;
 }
 
-/* 滑鼠點擊時的視覺反饋 */
-.mobile-link:active {
-    color: var(--spark-blue) !important;
-    transform: scale(0.95);
+#menu-btn.btn-active {
+    color: #ffffff !important; /* 變成 X 時切換為白色，避免跟綠色背景混淆 */
+    transform: rotate(90deg);  /* 增加一個旋轉動畫，更有科技感 */
+}
+
+.mobile-link {
+    color: white !important;
+    text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
+    z-index: 2001;
 }
     </style>
 </head>
@@ -336,22 +339,20 @@
         <a href="#contact" class="hover:text-[var(--spark-blue)] transition">聯絡我們</a>
     </div>
 
-    <button id="menu-btn" class="md:hidden text-[var(--spark-blue)] focus:outline-none z-[1001]">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-    </button>
+  <button id="menu-btn" class="md:hidden text-[var(--spark-blue)] focus:outline-none z-[3000] fixed top-5 right-6">
+    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+</button>
 
-   <div id="mobile-menu" class="fixed inset-0 bg-black z-[2000] flex flex-col items-center pt-32 transition-all duration-500 translate-x-full opacity-0">
-    
-    <div class="flex flex-col items-center gap-10 text-2xl tracking-[6px] font-bold">
+<div id="mobile-menu" class="fixed inset-0 bg-black z-[2000] flex flex-col items-center pt-32 transition-all duration-500 translate-x-full opacity-0 pointer-events-none">
+    <div class="flex flex-col items-center gap-10 text-2xl tracking-[6px] font-bold text-white">
         <a href="#" class="mobile-link">首頁</a>
         <a href="#about" class="mobile-link">協會理念</a>
         <a href="#competitions" class="mobile-link">三大賽事</a>
         <a href="#honors" class="mobile-link">榮耀時光放映館</a>
         <a href="#contact" class="mobile-link">聯絡我們</a>
     </div>
-<div class="mt-12 w-20 h-[1px] bg-[var(--spark-blue)] opacity-50"></div>
 </div>
 </nav>
 
@@ -568,40 +569,37 @@ particlesJS("particles-js", {
     },
     "retina_detect": true
 });
-   // 確保 DOM 載入後才執行
-document.addEventListener('DOMContentLoaded', () => {
-    const menuBtn = document.getElementById('menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
+const menuBtn = document.getElementById('menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const menuIcon = document.getElementById('menu-icon');
 
-    if (menuBtn && mobileMenu) {
-        menuBtn.addEventListener('click', function() {
-            // 切換選單
-            mobileMenu.classList.toggle('active');
-            
-            // 根據選單是否有 active 來切換圖示與效果
-            if (mobileMenu.classList.contains('active')) {
-                // 變為 X
-                menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
-                document.body.style.overflow = 'hidden'; // 禁止背景捲動
-            } else {
-                // 變回 漢堡
-                menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
-                document.body.style.overflow = ''; // 恢復捲動
-            }
-        });
+if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', () => {
+        const isActive = mobileMenu.classList.toggle('active');
+        menuBtn.classList.toggle('btn-active'); // 切換按鈕自己的樣式
+        
+        // 禁止背景捲動
+        document.body.style.overflow = isActive ? 'hidden' : '';
 
-        // 點擊選單內的連結後，自動關閉選單
-        const links = mobileMenu.querySelectorAll('a');
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-                menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
-                document.body.style.overflow = '';
-            });
+        // 切換圖示：三條線 <-> X
+        if (isActive) {
+            menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+        } else {
+            menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        }
+    });
+
+    // 點擊連結後自動關閉
+    const links = document.querySelectorAll('.mobile-link');
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            menuBtn.classList.remove('btn-active');
+            menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+            document.body.style.overflow = '';
         });
-    }
-});
+    });
+}
     </script>
 </body>
 </html>

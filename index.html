@@ -293,11 +293,18 @@
     transform: scale(1.1) rotate(2deg); /* 帶一點點傾斜，更有動態感 */
 }
         /* 當選單開啟時的狀態 */
+/* 確保選單開啟時，蓋過原本的隱藏位置 */
 #mobile-menu.active {
-    translate: 0;
-    opacity: 1;
+    transform: translateX(0) !important; /* 強制推回螢幕 */
+    opacity: 1 !important;              /* 強制顯示 */
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease;
 }
 
+/* 額外檢查：確保選單背景夠黑，不會被後面的機器人背景吃掉 */
+#mobile-menu {
+    background-color: rgba(0, 0, 0, 0.98) !important;
+    z-index: 1000;
+}
 /* 鎖定背景捲動 */
 body.menu-open {
     overflow: hidden;
@@ -558,31 +565,39 @@ particlesJS("particles-js", {
     },
     "retina_detect": true
 });
-        // 漢堡選單開關邏輯
-const menuBtn = document.getElementById('menu-btn');
-const mobileMenu = document.getElementById('mobile-menu');
-const menuIcon = document.getElementById('menu-icon');
-const mobileLinks = document.querySelectorAll('.mobile-link');
+   // 確保 DOM 載入後才執行
+document.addEventListener('DOMContentLoaded', () => {
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
 
-function toggleMenu() {
-    mobileMenu.classList.toggle('active');
-    document.body.classList.toggle('menu-open');
-    
-    // 切換漢堡圖示為 X
-    if (mobileMenu.classList.contains('active')) {
-        menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
-    } else {
-        menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', function() {
+            // 切換選單
+            mobileMenu.classList.toggle('active');
+            
+            // 根據選單是否有 active 來切換圖示與效果
+            if (mobileMenu.classList.contains('active')) {
+                // 變為 X
+                menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                document.body.style.overflow = 'hidden'; // 禁止背景捲動
+            } else {
+                // 變回 漢堡
+                menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+                document.body.style.overflow = ''; // 恢復捲動
+            }
+        });
+
+        // 點擊選單內的連結後，自動關閉選單
+        const links = mobileMenu.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+                document.body.style.overflow = '';
+            });
+        });
     }
-}
-
-menuBtn.addEventListener('click', toggleMenu);
-
-// 點擊連結後自動關閉選單
-mobileLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        if (mobileMenu.classList.contains('active')) toggleMenu();
-    });
 });
     </script>
 </body>

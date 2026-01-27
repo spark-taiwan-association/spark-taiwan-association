@@ -301,40 +301,20 @@
     display: flex !important;
 }
 
-/* 覆蓋原本所有 #mobile-menu 相關樣式 */
-#mobile-menu {
-    position: fixed !important;
-    inset: 0 !important;
-    background: #000000 !important; 
-    z-index: 9998 !important; 
-    display: flex !important;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    
-    /* 預設隱藏：移動到右側以外 */
-    transform: translateX(100%);
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none; /* 隱藏時不可點擊 */
+/* 確保叉叉按鈕永遠在最前面且顏色鮮明 */
+#menu-btn {
+    transition: transform 0.3s ease;
 }
 
-#mobile-menu.active {
-    transform: translateX(0);
-    pointer-events: auto; /* 顯示時恢復點擊 */
+#menu-btn.btn-active {
+    color: #ffffff !important; /* 變成 X 時切換為白色，避免跟綠色背景混淆 */
+    transform: rotate(90deg);  /* 增加一個旋轉動畫，更有科技感 */
 }
 
 .mobile-link {
     color: white !important;
     text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
-    margin: 20px 0; /* 增加選項間距 */
-    font-size: 1.5rem;
-    font-weight: bold;
-    letter-spacing: 4px;
-    transition: color 0.3s ease;
-}
-
-.mobile-link:hover {
-    color: var(--spark-blue) !important;
+    z-index: 2001;
 }
     </style>
 </head>
@@ -364,8 +344,8 @@
     </svg>
 </button>
 
-<div id="mobile-menu">
-    <div class="flex flex-col items-center gap-10 text-2xl tracking-[6px] font-bold">
+<div id="mobile-menu" class="fixed inset-0 bg-black z-[2000] flex flex-col items-center pt-32 transition-all duration-500 translate-x-full opacity-0 pointer-events-none">
+    <div class="flex flex-col items-center gap-10 text-2xl tracking-[6px] font-bold text-white">
         <a href="#" class="mobile-link">首頁</a>
         <a href="#about" class="mobile-link">協會理念</a>
         <a href="#competitions" class="mobile-link">三大賽事</a>

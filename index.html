@@ -268,32 +268,62 @@
     z-index: -1; /* 放在所有內容後方 */
     background: var(--bg-dark);
 }
+        /* LOGO 核心呼吸燈動畫 */
+@keyframes spark-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 15px rgba(129, 216, 208, 0.4)) brightness(1);
+        transform: scale(1);
+    }
+    50% {
+        filter: drop-shadow(0 0 35px rgba(129, 216, 208, 0.8)) brightness(1.2);
+        transform: scale(1.02); /* 微幅放大，更有動態感 */
+    }
+}
+
+.spark-logo-glow {
+    animation: spark-pulse 3s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+/* 游標移上去時加強發光 */
+.spark-logo-glow:hover {
+    filter: drop-shadow(0 0 45px rgba(129, 216, 208, 1));
+    transform: scale(1.05);
+}
     </style>
 </head>
 <body>
     <div id="particles-js"></div>
     <div id="cursor-glow"></div>
 
-    <nav class="flex justify-between items-center px-10 py-5">
-        <div class="text-2xl font-black tracking-tighter">SPARK 臺灣智能程式科技教育推廣協會</div>
-        <div class="hidden md:flex gap-8 font-medium text-sm tracking-widest">
-            <a href="#" class="hover:text-[var(--spark-blue)] transition">首頁</a>
-            <a href="#about" class="hover:text-[var(--spark-blue)] transition">協會理念</a>
-            <a href="#competitions" class="hover:text-[var(--spark-blue)] transition">三大賽事</a>
-            <a href="#honors" class="hover:text-[var(--spark-blue)] transition">榮耀時光放映館</a>
-            <a href="#contact" class="hover:text-[var(--spark-blue)] transition">聯絡我們</a>
+<nav class="flex justify-between items-center px-10 py-5">
+    <div class="flex items-center gap-4">
+      <img src="spark_logo.png" alt="SPARK" class="h-10 w-auto object-contain spark-logo-glow">
+        
+        <div class="text-2xl font-black tracking-tighter">
+            SPARK <span class="hidden sm:inline">臺灣智能程式科技教育推廣協會</span>
         </div>
-    </nav>
+    </div>
+
+    <div class="hidden md:flex gap-8 font-medium text-sm tracking-widest">
+        <a href="#" class="hover:text-[var(--spark-blue)] transition">首頁</a>
+        <a href="#about" class="hover:text-[var(--spark-blue)] transition">協會理念</a>
+        <a href="#competitions" class="hover:text-[var(--spark-blue)] transition">三大賽事</a>
+        <a href="#honors" class="hover:text-[var(--spark-blue)] transition">榮耀時光放映館</a>
+        <a href="#contact" class="hover:text-[var(--spark-blue)] transition">聯絡我們</a>
+    </div>
+</nav>
 
     <section class="hero-slider">
         <div class="slide active" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('slide1.jpg')"></div>
         <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('slide2.jpg')"></div>
         <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('slide3.jpg')"></div>
-        <div class="hero-overlay">
-            <h1 class="hero-title">SPARK</h1>
-            <p class="text-2xl mt-4 tracking-[10px] uppercase font-light">臺灣智能程式科技教育推廣協會</p>
-            <div class="mt-10 animate-bounce text-[var(--spark-blue)]">▼ Scroll Down</div>
-        </div>
+       <div class="hero-overlay">
+  <img src="spark_logo2.png" alt="SPARK" class="w-40 md:w-56 mb-8 spark-logo-glow">
+    <h1 class="hero-title">SPARK</h1>
+    <p class="text-2xl mt-4 tracking-[10px] uppercase font-light">臺灣智能程式科技教育推廣協會</p>
+    <div class="mt-10 animate-bounce text-[var(--spark-blue)]">▼ Scroll Down</div>
+</div>
     </section>
 
     <div class="news-ticker">

@@ -569,36 +569,35 @@ particlesJS("particles-js", {
     },
     "retina_detect": true
 });
-const menuBtn = document.getElementById('menu-btn');
-const mobileMenu = document.getElementById('mobile-menu');
-const menuIcon = document.getElementById('menu-icon');
+/* --- 修改這部分來解決透明問題 --- */
+#mobile-menu {
+    position: fixed !important;
+    inset: 0 !important;
+    /* 1. 強制純黑，不使用 rgba 也不使用半透明 */
+    background: #000000 !important; 
+    /* 2. 設為極高層級，確保蓋過大 LOGO (之前的問題核心) */
+    z-index: 9999 !important; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 120px;
+    /* 3. 初始狀態完全隱藏 */
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
 
-if (menuBtn && mobileMenu) {
-    menuBtn.addEventListener('click', () => {
-        const isActive = mobileMenu.classList.toggle('active');
-        menuBtn.classList.toggle('btn-active'); // 切換按鈕自己的樣式
-        
-        // 禁止背景捲動
-        document.body.style.overflow = isActive ? 'hidden' : '';
+/* 4. 啟動狀態：強制不透明且歸位 */
+#mobile-menu.active {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    background-color: #000000 !important;
+}
 
-        // 切換圖示：三條線 <-> X
-        if (isActive) {
-            menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
-        } else {
-            menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
-        }
-    });
-
-    // 點擊連結後自動關閉
-    const links = document.querySelectorAll('.mobile-link');
-    links.forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-            menuBtn.classList.remove('btn-active');
-            menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
-            document.body.style.overflow = '';
-        });
-    });
+/* 5. 確保叉叉按鈕比選單更高，否則會被選單擋住點不到 */
+#menu-btn {
+    z-index: 10000 !important; 
 }
     </script>
 </body>

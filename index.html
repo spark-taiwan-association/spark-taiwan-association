@@ -301,20 +301,31 @@
     display: flex !important;
 }
 
-/* 確保叉叉按鈕永遠在最前面且顏色鮮明 */
+/* --- 修改這部分來解決透明問題 --- */
+#mobile-menu {
+    position: fixed !important;
+    inset: 0 !important;
+    background: #000000 !important; /* 強制純黑 */
+    z-index: 9998 !important;       /* 低於按鈕 */
+    display: flex !important;       /* 強制為 Flex 佈局 */
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 120px;
+    transform: translateX(100%);     /* 預設在右側 */
+    opacity: 0;
+    visibility: hidden;              /* 預設隱藏 */
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+#mobile-menu.active {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    visibility: visible !important;   /* 開啟時顯示 */
+}
+
 #menu-btn {
-    transition: transform 0.3s ease;
-}
-
-#menu-btn.btn-active {
-    color: #ffffff !important; /* 變成 X 時切換為白色，避免跟綠色背景混淆 */
-    transform: rotate(90deg);  /* 增加一個旋轉動畫，更有科技感 */
-}
-
-.mobile-link {
-    color: white !important;
-    text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
-    z-index: 2001;
+    z-index: 9999 !important;        /* 確保按鈕永遠在選單之上 */
 }
     </style>
 </head>
@@ -345,7 +356,7 @@
     </svg>
 </button>
 
-<div id="mobile-menu" class="fixed inset-0 bg-black z-[2000] flex flex-col items-center pt-32 transition-all duration-500 translate-x-full opacity-0 pointer-events-none">
+<div id="mobile-menu" class="fixed inset-0 bg-black flex flex-col items-center pt-32">
     <div class="flex flex-col items-center gap-10 text-2xl tracking-[6px] font-bold text-white">
         <a href="#" class="mobile-link">首頁</a>
         <a href="#about" class="mobile-link">協會理念</a>
@@ -569,35 +580,36 @@ particlesJS("particles-js", {
     },
     "retina_detect": true
 });
-/* --- 修改這部分來解決透明問題 --- */
-#mobile-menu {
-    position: fixed !important;
-    inset: 0 !important;
-    /* 1. 強制純黑，不使用 rgba 也不使用半透明 */
-    background: #000000 !important; 
-    /* 2. 設為極高層級，確保蓋過大 LOGO (之前的問題核心) */
-    z-index: 9999 !important; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding-top: 120px;
-    /* 3. 初始狀態完全隱藏 */
-    transform: translateX(100%);
-    opacity: 0;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-}
+const menuBtn = document.getElementById('menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const menuIcon = document.getElementById('menu-icon');
 
-/* 4. 啟動狀態：強制不透明且歸位 */
-#mobile-menu.active {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-    background-color: #000000 !important;
-}
+if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', () => {
+        const isActive = mobileMenu.classList.toggle('active');
+        menuBtn.classList.toggle('btn-active');
+        
+        // 禁止背景捲動
+        document.body.style.overflow = isActive ? 'hidden' : '';
 
-/* 5. 確保叉叉按鈕比選單更高，否則會被選單擋住點不到 */
-#menu-btn {
-    z-index: 10000 !important; 
+        // 切換圖示：三條線 <-> X
+        if (isActive) {
+            menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+        } else {
+            menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        }
+    });
+
+    // 點擊連結後自動關閉
+    const links = document.querySelectorAll('.mobile-link');
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            menuBtn.classList.remove('btn-active');
+            menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+            document.body.style.overflow = '';
+        });
+    });
 }
     </script>
 </body>

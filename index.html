@@ -267,6 +267,33 @@
         line-height: 1.4 !important; /* 確保兩行字不會太擠 */
         font-size: 2rem !important;  /* 根據需求調整手機版大小 */
         margin-bottom: 1.5rem !important;
+        /* 1. 讓影片/圖片容器變大，並調整比例 (原本可能是 16:9，改為 4:3 讓垂直空間更多) */
+    .glory-moments-container, .movie-screen {
+        width: 100% !important;
+        aspect-ratio: 4 / 3 !important; /* 讓圖片螢幕變高一點 */
+        height: auto !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* 2. 針對圖片本身，確保縮放時重點（人臉）在中心 */
+    .movie-screen img {
+        object-fit: cover !important;
+        object-position: center 20% !important; /* 將圖片重心上移，防止腳部文字擋住人臉 */
+    }
+
+    /* 3. 調整文字介紹遮罩的高度與位置 */
+    /* 讓遮罩變窄，且置於最下方，避免擋住小朋友 */
+    .movie-info-overlay {
+        padding: 8px 10px !important;
+        background: rgba(0, 0, 0, 0.7) !important; /* 稍微透明一點點 */
+        bottom: 0 !important;
+        height: auto !important;
+    }
+
+    /* 4. 縮小文字字體，避免文字塊佔用太多垂直空間 */
+    .movie-info-overlay h3 {
+        font-size: 14px !important;
+        margin-bottom: 0 !important;
     }
 }
         /* === 新增：粒子背景容器 === */

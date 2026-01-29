@@ -260,59 +260,58 @@
         }
         /* 新增或修改針對 768px (手機版) 的精確排版 */
 @media (max-width: 768px) {
-    /* 1. 協會理念：手機版 2+2 標題設定 */
+    /* 1. 協會理念標題：讓 2+2 換行生效 */
     .section-title.mobile-only {
         display: block !important;
         text-align: center !important;
         line-height: 1.4 !important;
         font-size: 2rem !important;
         margin-bottom: 1.5rem !important;
-    } /* <--- 這裡原本漏掉了這個括號 */
-
-    /* 2. 榮耀時光：讓外層容器與螢幕同寬 */
-    .glory-moments-section .container {
-        max-width: 100% !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important;
     }
 
-    /* 3. 榮耀時光：讓影片/圖片螢幕變大，改為 4:3 比例 */
-    .glory-moments-container, .movie-screen {
+    /* 2. 榮耀時光：將外層容器撐滿，給螢幕更多空間 */
+    .cinema-screen-container {
         width: 100% !important;
-        aspect-ratio: 4 / 3 !important; /* 增加高度，避免擋住人臉 */
-        height: auto !important;
-        margin-bottom: 20px !important;
-        overflow: hidden !important;
+        max-width: 100% !important;
+        margin: 20px 0 !important;
     }
 
-    /* 4. 針對圖片本身，將重心上移 20%，保住小朋友的臉 */
-    .movie-screen img {
+    /* 3. 榮耀時光螢幕：比例改為 4:3，增加高度避免人臉被遮 */
+    .cinema-screen {
+        width: 100% !important;
+        aspect-ratio: 4 / 3 !important; 
+        height: auto !important;
+        border-width: 2px !important;
+    }
+
+    /* 4. 針對圖片：重點(20%處)上移，保住小朋友的臉部 */
+    .slide-img {
         width: 100% !important;
         height: 100% !important;
         object-fit: cover !important;
         object-position: center 20% !important; 
     }
 
-    /* 5. 調整底部文字遮罩，變窄並靠底，像電影字幕一樣 */
-    .movie-info-overlay {
-        position: absolute !important;
-        width: 100% !important;
-        padding: 10px 15px !important;
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.85)) !important; /* 漸層背景更美觀 */
-        bottom: 0 !important;
-        left: 0 !important;
-        height: auto !important;
-        z-index: 10 !important;
+    /* 5. 調整底部文字遮罩：變窄、置底，不擋主畫面 */
+    .subtitle-container {
+        bottom: 15px !important;
     }
 
-    /* 6. 縮小文字字體，騰出空間給圖片內容 */
-    .movie-info-overlay h3 {
-        font-size: 15px !important;
-        font-weight: bold !important;
-        margin-bottom: 0 !important;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5) !important;
+    .subtitle-text {
+        font-size: 14px !important;
+        padding: 5px 15px !important;
+        background: rgba(0, 0, 0, 0.75) !important;
+        border-bottom: 2px solid var(--spark-blue) !important;
+        display: inline-block !important;
     }
-} /* <--- 這是 Media Query 的總結尾 */
+
+    /* 6. 下方控制台：稍微縮小避免視覺太重 */
+    .control-deck {
+        width: 80% !important;
+        gap: 20px !important;
+        padding: 10px !important;
+    }
+}
         /* === 新增：粒子背景容器 === */
 #particles-js {
     position: fixed;
@@ -435,7 +434,7 @@
     <div class="glass-box">
         <h2 class="section-title hidden md:block">協會理念</h2>
 
-        <h2 class="section-title block md:hidden">協會<br>理念</h2>
+        <h2 class="section-title mobile-only block md:hidden">協會<br>理念</h2>
 
         <p class="text-center text-gray-400 text-lg leading-relaxed max-w-4xl mx-auto">
             SPARK (臺灣智能程式科技教育推廣協會) 致力於點燃青少年對程式與人工智慧的熱情。<br>

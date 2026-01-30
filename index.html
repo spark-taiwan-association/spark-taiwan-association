@@ -8,646 +8,364 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;900&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
    
-    <style>
-        :root {
-            --spark-blue: #81D8D0;
-            --spark-purple: #9d50bb;
-            --tech-gold: #ffcc00;
-            --bg-dark: #050505;
-        }
-
-        body {
-            background: var(--bg-dark);
-            color: white;
-            font-family: 'Noto Sans TC', sans-serif;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        /* === 1. 滑鼠引力燈 === */
-        #cursor-glow {
-            position: fixed;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(129, 216, 208, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-        }
-
-        /* === 2. 導航欄 === */
-        nav {
-            position: fixed;
-            top: 0; width: 100%;
-            z-index: 1000;
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* === 3. 英雄首頁區 === */
-        .hero-slider {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .slide {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out, transform 3s ease-out;
-            background-size: cover;
-            background-position: center;
-            transform: scale(1.1);
-        }
-        .slide.active { opacity: 1; transform: scale(1); }
-
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, var(--bg-dark) 90%);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; z-index: 10;
-        }
-
-        .hero-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            font-weight: 900;
-            letter-spacing: 10px;
-            background: linear-gradient(to right, #fff, var(--spark-blue), #fff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
-        }
-        @keyframes shine { to { background-position: 200% center; } }
-
-        /* === 4. 最新消息流水導覽 === */
-        .news-ticker {
-            background: rgba(129, 216, 208, 0.1);
-            border-top: 1px solid var(--spark-blue);
-            border-bottom: 1px solid var(--spark-blue);
-            padding: 10px 0;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .ticker-content {
-            display: inline-block;
-            animation: ticker 30s linear infinite;
-            font-weight: 500;
-        }
-        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        /* === 5. 通用標題與排版 === */
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
-            text-align: center;
-            letter-spacing: 5px;
-            margin-bottom: 50px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
-        }
-
-        .content-section { padding: 100px 10%; background: #080808; }
-        .glass-box {
-            background: rgba(255,255,255,0.03); border-radius: 30px;
-            padding: 60px; border: 1px solid rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-        }
-
-        /* === 6. 三大賽事流水燈與閃爍 === */
-        .comp-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            padding: 0 10% 100px;
-        }
-
-        .comp-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .logo-frame {
-            position: relative;
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 25px;
-            background: #000;
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .logo-frame::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, #81D8D0, transparent, transparent, #81D8D0);
-            animation: rotate-border 3s linear infinite;
-        }
-
-        .logo-frame::after {
-            content: '';
-            position: absolute;
-            inset: 3px;
-            background: #000;
-            border-radius: 18px;
-            z-index: 1;
-        }
-
-        .logo-frame img {
-            position: relative;
-            z-index: 2;
-            max-width: 75%;
-            max-height: 75%;
-            object-fit: contain;
-            transition: transform 0.4s ease;
-        }
-
-        .comp-card:hover .logo-frame::before {
-            animation: flicker-border 0.15s infinite;
-            background: #81D8D0;
-        }
-
-        .comp-card:hover {
-            border-color: var(--spark-blue);
-            transform: translateY(-5px);
-            background: rgba(129, 216, 208, 0.05);
-        }
-
-        .comp-card:hover .logo-frame {
-            box-shadow: 0 0 40px rgba(129, 216, 208, 0.5);
-        }
-
-        .comp-card h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: var(--spark-blue);
-        }
-
-        @keyframes rotate-border { 100% { transform: rotate(360deg); } }
-        @keyframes flicker-border { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-        /* === 7. 榮耀放映館 === */
-        .cinema-screen-container { position: relative; width: 90%; max-width: 1000px; margin: 40px auto; perspective: 1000px; }
-        .cinema-screen {
-            position: relative; aspect-ratio: 16/9; background: #000;
-            border: 4px solid #333; border-radius: 10px;
-            box-shadow: 0 0 30px rgba(129, 216, 208, 0.2); overflow: hidden; z-index: 30;
-        }
-        .slide-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.8s ease; }
-        .slide-img.active { opacity: 1; animation: screenShake 0.4s infinite; }
-
-        .projector-unit-fixed { position: absolute; right: -160px; top: 50%; transform: translateY(-50%); z-index: 99; width: 200px; }
-        .projector-machine { position: relative; width: 100px; height: 120px; background: #1a1a1a; border: 2px solid #333; border-radius: 8px; margin-left: auto; }
-        .reel { position: absolute; width: 85px; height: 85px; border: 5px solid #2a2a2a; border-radius: 50%; background: repeating-conic-gradient(#111 0% 15%, #222 15% 30%); animation: rotateMachine 3s linear infinite; }
-        .reel.spinning { animation: rotateMachine 0.3s linear infinite !important; }
-        .reel-top { top: -60px; right: 20px; } .reel-back { top: 20px; right: -40px; z-index: -1; }
-        .lens-glow { position: absolute; left: -35px; top: 25px; width: 10px; height: 50px; background: var(--spark-blue); box-shadow: 0 0 20px var(--spark-blue); z-index: 2; }
-        .cinema-beam-fixed { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 1200px; height: 700px; background: radial-gradient(ellipse at right, rgba(129, 216, 208, 0.15) 0%, transparent 80%); clip-path: polygon(0% 0%, 0% 100%, 100% 52%, 100% 48%); pointer-events: none; z-index: -1; }
-
-        .subtitle-container { position: absolute; bottom: 30px; width: 100%; text-align: center; z-index: 50; }
-        .subtitle-text { background: rgba(0, 0, 0, 0.85); color: var(--spark-blue); padding: 8px 25px; font-size: 1.2rem; font-weight: 700; border-bottom: 2px solid var(--spark-blue); }
-
-        .control-deck { background: #111; border: 1px solid #333; border-radius: 0 0 15px 15px; width: 60%; margin: -4px auto 0; padding: 15px; display: flex; justify-content: center; gap: 40px; position: relative; z-index: 40; }
-        .dial-button { width: 40px; height: 40px; background: #222; border: 2px solid #444; border-radius: 50%; cursor: pointer; position: relative; }
-        .dial-button::after { content: ''; width: 3px; height: 10px; background: var(--spark-blue); position: absolute; top: 5px; left: calc(50% - 1.5px); }
-
-        /* === 8. 聯絡我們與特效 === */
-        .icon-box { width: 60px; height: 60px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; }
-        .social-icon { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 0 5px var(--spark-blue)); }
-        
-        .social-container { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; padding: 40px 0; }
-        .social-card { text-decoration: none; color: #fff; perspective: 1000px; animation: floatingCard 4s ease-in-out infinite; }
-        .card-inner {
-            width: 140px; height: 160px; background: rgba(15, 15, 25, 0.8);
-            border: 2px solid var(--spark-blue); border-radius: 10px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.2);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;
-        }
-        .social-card:hover .card-inner {
-            transform: translateY(-10px) rotateX(10deg) scale(1.1);
-            border-color: var(--spark-purple);
-            box-shadow: 0 0 30px rgba(157, 80, 187, 0.6), inset 0 0 20px rgba(157, 80, 187, 0.4);
-        }
-
-        /* 動畫庫 */
-        @keyframes screenShake { 0% { transform: translate(0,0); } 10% { transform: translate(-0.5px, 0.5px); } }
-        @keyframes rotateMachine { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes floatingCard { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        footer { padding: 60px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); }
-        .cursor { display: inline-block; width: 3px; height: 20px; background: var(--spark-blue); animation: blink 0.8s infinite; vertical-align: middle; }
-
-        @media (max-width: 1024px) { 
-            .projector-unit-fixed { display: none; } 
-            .comp-grid { grid-template-columns: 1fr; }
-        }
-        /* 新增或修改針對 768px (手機版) 的精確排版 */
-@media (max-width: 768px) {
-    /* 1. 協會理念標題：讓 2+2 換行生效 */
-    .section-title.mobile-only {
-        display: block !important;
-        visibility: visible !important;
-        font-size: 2rem !important;
-        line-height: 1.5 !important;
-        text-align: center !important;
-    }
-    /* 隱藏電腦版標題 */
-    .section-title.hidden {
-        display: none !important;
-    }
-}
-    /* 2. 榮耀時光：將外層容器撐滿，給螢幕更多空間 */
-    .cinema-screen-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 20px 0 !important;
+  <style>
+    :root {
+        --spark-blue: #81D8D0;
+        --spark-purple: #9d50bb;
+        --tech-gold: #ffcc00;
+        --bg-dark: #050505;
     }
 
-    /* 3. 榮耀時光螢幕：比例改為 4:3，增加高度避免人臉被遮 */
+    body {
+        background: var(--bg-dark);
+        color: white;
+        font-family: 'Noto Sans TC', sans-serif;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        margin: 0; /* 確保無邊距 */
+    }
+
+    /* === [關鍵修正：粒子背景置底] === */
+    #particles-js {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; /* 絕對最底層 */
+        background: var(--bg-dark);
+        pointer-events: none;
+    }
+
+    /* === 1. 滑鼠引力燈 === */
+    #cursor-glow {
+        position: fixed;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(129, 216, 208, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+    }
+
+    /* === 2. 導航欄 === */
+    nav {
+        position: fixed;
+        top: 0; width: 100%;
+        z-index: 1000;
+        background: rgba(5, 5, 5, 0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* === 3. 英雄首頁區 === */
+    .hero-slider {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        z-index: 10; /* 確保在粒子上方 */
+    }
+    .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out, transform 3s ease-out;
+        background-size: cover;
+        background-position: center;
+        transform: scale(1.1);
+    }
+    .slide.active { opacity: 1; transform: scale(1); }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, var(--bg-dark) 90%);
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        text-align: center; z-index: 10;
+    }
+
+    .hero-title {
+        font-family: 'Orbitron', sans-serif;
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        font-weight: 900;
+        letter-spacing: 10px;
+        background: linear-gradient(to right, #fff, var(--spark-blue), #fff);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 5s linear infinite;
+    }
+    @keyframes shine { to { background-position: 200% center; } }
+
+    /* === 4. 最新消息流水導覽 === */
+    .news-ticker {
+        background: rgba(129, 216, 208, 0.1);
+        border-top: 1px solid var(--spark-blue);
+        border-bottom: 1px solid var(--spark-blue);
+        padding: 10px 0;
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+        z-index: 20;
+    }
+    .ticker-content {
+        display: inline-block;
+        animation: ticker 30s linear infinite;
+        font-weight: 500;
+    }
+    @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+    /* === 5. 通用標題與排版 === */
+    .section-title {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.5rem;
+        text-align: center;
+        letter-spacing: 5px;
+        margin-bottom: 50px;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
+    }
+
+    .content-section { 
+        padding: 100px 10%; 
+        background: transparent; /* 修正：讓背景透明才能看到粒子 */
+        position: relative;
+        z-index: 10;
+    }
+    .glass-box {
+        background: rgba(255,255,255,0.03); border-radius: 30px;
+        padding: 60px; border: 1px solid rgba(255,255,255,0.05);
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* === 6. 三大賽事流水燈與閃爍 === */
+    .comp-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 0 10% 100px;
+    }
+
+    .comp-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .logo-frame {
+        position: relative;
+        width: 130px;
+        height: 130px;
+        margin: 0 auto 25px;
+        background: #000;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .logo-frame::before {
+        content: '';
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(from 0deg, #81D8D0, transparent, transparent, #81D8D0);
+        animation: rotate-border 3s linear infinite;
+    }
+
+    .logo-frame::after {
+        content: '';
+        position: absolute;
+        inset: 3px;
+        background: #000;
+        border-radius: 18px;
+        z-index: 1;
+    }
+
+    .logo-frame img {
+        position: relative;
+        z-index: 2;
+        max-width: 75%;
+        max-height: 75%;
+        object-fit: contain;
+        transition: transform 0.4s ease;
+    }
+
+    .comp-card:hover .logo-frame::before {
+        animation: flicker-border 0.15s infinite;
+        background: #81D8D0;
+    }
+
+    .comp-card:hover {
+        border-color: var(--spark-blue);
+        transform: translateY(-5px);
+        background: rgba(129, 216, 208, 0.05);
+    }
+
+    .comp-card:hover .logo-frame {
+        box-shadow: 0 0 40px rgba(129, 216, 208, 0.5);
+    }
+
+    .comp-card h3 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        color: var(--spark-blue);
+    }
+
+    @keyframes rotate-border { 100% { transform: rotate(360deg); } }
+    @keyframes flicker-border { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* === 7. 榮耀放映館 === */
+    .cinema-screen-container { position: relative; width: 90%; max-width: 1000px; margin: 40px auto; perspective: 1000px; z-index: 30; }
     .cinema-screen {
-        width: 100% !important;
-        aspect-ratio: 4 / 3 !important; 
-        height: auto !important;
-        border-width: 2px !important;
+        position: relative; aspect-ratio: 16/9; background: #000;
+        border: 4px solid #333; border-radius: 10px;
+        box-shadow: 0 0 30px rgba(129, 216, 208, 0.2); overflow: hidden;
+    }
+    .slide-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.8s ease; }
+    .slide-img.active { opacity: 1; animation: screenShake 0.4s infinite; }
+
+    .projector-unit-fixed { position: absolute; right: -160px; top: 50%; transform: translateY(-50%); z-index: 99; width: 200px; }
+    .projector-machine { position: relative; width: 100px; height: 120px; background: #1a1a1a; border: 2px solid #333; border-radius: 8px; margin-left: auto; }
+    .reel { position: absolute; width: 85px; height: 85px; border: 5px solid #2a2a2a; border-radius: 50%; background: repeating-conic-gradient(#111 0% 15%, #222 15% 30%); animation: rotateMachine 3s linear infinite; }
+    .reel.spinning { animation: rotateMachine 0.3s linear infinite !important; }
+    .reel-top { top: -60px; right: 20px; } .reel-back { top: 20px; right: -40px; z-index: -1; }
+    .lens-glow { position: absolute; left: -35px; top: 25px; width: 10px; height: 50px; background: var(--spark-blue); box-shadow: 0 0 20px var(--spark-blue); z-index: 2; }
+    .cinema-beam-fixed { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 1200px; height: 700px; background: radial-gradient(ellipse at right, rgba(129, 216, 208, 0.15) 0%, transparent 80%); clip-path: polygon(0% 0%, 0% 100%, 100% 52%, 100% 48%); pointer-events: none; z-index: -1; }
+
+    .subtitle-container { position: absolute; bottom: 30px; width: 100%; text-align: center; z-index: 50; }
+    .subtitle-text { background: rgba(0, 0, 0, 0.85); color: var(--spark-blue); padding: 8px 25px; font-size: 1.2rem; font-weight: 700; border-bottom: 2px solid var(--spark-blue); }
+
+    .control-deck { background: #111; border: 1px solid #333; border-radius: 0 0 15px 15px; width: 60%; margin: -4px auto 0; padding: 15px; display: flex; justify-content: center; gap: 40px; position: relative; z-index: 40; }
+    .dial-button { width: 40px; height: 40px; background: #222; border: 2px solid #444; border-radius: 50%; cursor: pointer; position: relative; }
+    .dial-button::after { content: ''; width: 3px; height: 10px; background: var(--spark-blue); position: absolute; top: 5px; left: calc(50% - 1.5px); }
+
+    /* === 8. 聯絡我們與特效 === */
+    .social-container { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; padding: 40px 0; }
+    .social-card { text-decoration: none; color: #fff; perspective: 1000px; animation: floatingCard 4s ease-in-out infinite; }
+    .card-inner {
+        width: 140px; height: 160px; background: rgba(15, 15, 25, 0.8);
+        border: 2px solid var(--spark-blue); border-radius: 10px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.2);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;
+    }
+    .social-card:hover .card-inner {
+        transform: translateY(-10px) rotateX(10deg) scale(1.1);
+        border-color: var(--spark-purple);
+        box-shadow: 0 0 30px rgba(157, 80, 187, 0.6), inset 0 0 20px rgba(157, 80, 187, 0.4);
+    }
+    .icon-box { width: 60px; height: 60px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; }
+    .social-icon { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 0 5px var(--spark-blue)); }
+
+    /* 動畫庫 */
+    @keyframes screenShake { 0% { transform: translate(0,0); } 10% { transform: translate(-0.5px, 0.5px); } }
+    @keyframes rotateMachine { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes floatingCard { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    footer { padding: 60px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 10; }
+    .cursor { display: inline-block; width: 3px; height: 20px; background: var(--spark-blue); animation: blink 0.8s infinite; vertical-align: middle; }
+
+    /* === 響應式佈局 === */
+    @media (max-width: 1024px) {
+        .projector-unit-fixed { display: none; }
+        .comp-grid { grid-template-columns: 1fr; }
     }
 
-    /* 4. 針對圖片：重點(20%處)上移，保住小朋友的臉部 */
-    .slide-img {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-        object-position: center 20% !important; 
+    @media (max-width: 768px) {
+        .section-title.mobile-only {
+            display: block !important;
+            visibility: visible !important;
+            font-size: 2rem !important;
+            line-height: 1.5 !important;
+        }
+        .section-title.desktop-only { display: none !important; }
+        .cinema-screen-container { width: 100% !important; margin: 20px 0 !important; }
+        .cinema-screen { aspect-ratio: 4 / 3 !important; }
+        .slide-img { object-position: center 20% !important; }
+        .control-deck { width: 80% !important; }
     }
 
-    /* 5. 調整底部文字遮罩：變窄、置底，不擋主畫面 */
-    .subtitle-container {
-        bottom: 15px !important;
+    /* === SPARK 戰術機翼與戰績螢幕 (完整保留) === */
+    #records { position: relative; overflow: visible !important; background: transparent; }
+    .ultimate-monitor-container {
+        position: relative; width: 100%; max-width: 1200px; margin: 80px auto;
+        display: flex; justify-content: center; align-items: center; z-index: 10;
     }
-
-    .subtitle-text {
-        font-size: 14px !important;
-        padding: 5px 15px !important;
-        background: rgba(0, 0, 0, 0.75) !important;
-        border-bottom: 2px solid var(--spark-blue) !important;
-        display: inline-block !important;
+    .video-monitor-frame {
+        position: relative; width: 800px; padding: 18px; background: #000;
+        border-radius: 15px; z-index: 10; overflow: hidden;
+        box-shadow: 0 0 80px rgba(0,0,0,0.8);
     }
-
-    /* 6. 下方控制台：稍微縮小避免視覺太重 */
-    .control-deck {
-        width: 80% !important;
-        gap: 20px !important;
-        padding: 10px !important;
+    .video-monitor-frame::before {
+        content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+        background: conic-gradient(transparent, var(--spark-blue), transparent 30%, var(--spark-purple), transparent 70%);
+        animation: rotate-flow 4s linear infinite; filter: blur(8px);
     }
-}
-        /* === 新增：粒子背景容器 === */
-#particles-js {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; /* 放在所有內容後方 */
-    background: var(--bg-dark);
-}
-/* 進階能量呼吸燈 */
-@keyframes spark-energy {
-    0%, 100% {
-        filter: drop-shadow(0 0 10px rgba(129, 216, 208, 0.4)) brightness(1);
-        transform: scale(1);
+    .video-monitor-frame::after { content: ''; position: absolute; inset: 8px; background: #050505; border-radius: 10px; z-index: 1; }
+
+    .side-wing {
+        position: absolute; top: 50%; transform: translateY(-50%); width: 140px; height: 240px;
+        z-index: 5; padding: 10px; overflow: hidden; background: #000; border-radius: 10px;
     }
-    50% {
-        /* 增加發光範圍與亮度 */
-        filter: drop-shadow(0 0 30px rgba(129, 216, 208, 0.9)) brightness(1.3);
-        transform: scale(1.03);
+    .side-wing::before {
+        content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+        background: conic-gradient(transparent, var(--spark-blue), transparent 40%);
+        animation: rotate-flow 6s linear infinite reverse; opacity: 0.6;
     }
-}
+    .side-wing::after { content: ''; position: absolute; inset: 2px; background: rgba(5, 5, 5, 0.9); border-radius: 8px; z-index: 1; }
 
-.spark-logo-glow {
-    animation: spark-energy 4s ease-in-out infinite;
-    /* 讓滑鼠滑過時有電力爆發感 */
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer;
-}
+    .wing-l { left: -160px; clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%); }
+    .wing-r { right: -160px; clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%); }
 
-.spark-logo-glow:hover {
-    filter: drop-shadow(0 0 50px rgba(129, 216, 208, 1)) contrast(1.1);
-    transform: scale(1.1) rotate(2deg); /* 帶一點點傾斜，更有動態感 */
-}
-/* 強制開啟選單時的狀態 */
-#mobile-menu.active {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-    background-color: #000000 !important; /* 強制純黑背景，解決透明混亂 */
-    pointer-events: auto !important;     /* 允許點擊 */
-    display: flex !important;
-}
+    .wing-inner-content { position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column; justify-content: space-around; font-family: 'Orbitron', sans-serif; color: var(--spark-blue); }
+    .spectrum-box { display: flex; align-items: flex-end; gap: 3px; height: 60px; }
+    .spec-bar { flex: 1; background: var(--spark-blue); height: 20%; animation: bar-jump 0.5s ease-in-out infinite alternate; }
 
-/* 確保叉叉按鈕永遠在最前面且顏色鮮明 */
-#menu-btn {
-    transition: transform 0.3s ease;
-}
+    @keyframes bar-jump { 0% { height: 10%; opacity: 0.3; } 100% { height: 80%; opacity: 1; box-shadow: 0 0 10px var(--spark-blue); } }
+    @keyframes rotate-flow { 100% { transform: rotate(360deg); } }
 
-#menu-btn.btn-active {
-    color: #ffffff !important; /* 變成 X 時切換為白色，避免跟綠色背景混淆 */
-    transform: rotate(90deg);  /* 增加一個旋轉動畫，更有科技感 */
-}
-
-.mobile-link {
-    color: white !important;
-    text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
-    z-index: 2001;
-}
-/* --- SPARK ULTIMATE MAX: 戰術核心樣式 --- */
-:root {
-    --spark-blue: #81d8d0;
-    --spark-purple: #a855f7;
-}
-
-#records {
-    position: relative;
-    overflow: visible !important; /* 核心修正：不允許父層切割機翼 */
-    background: #050505;
-}
-
-/* 主容器：擴展範圍以容納兩翼 */
-.ultimate-monitor-container {
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
-    margin: 80px auto;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* --- [主螢幕：MAX 版流水燈] --- */
-.video-monitor-frame {
-    position: relative;
-    width: 800px; /* 縮小一點點主螢幕，給機翼留空間 */
-    padding: 18px; /* 決定流水燈粗度 */
-    background: #000;
-    border-radius: 15px;
-    z-index: 10;
-    overflow: hidden;
-    box-shadow: 0 0 80px rgba(0,0,0,0.8);
-}
-
-.video-monitor-frame::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background: conic-gradient(transparent, var(--spark-blue), transparent 30%, var(--spark-purple), transparent 70%);
-    animation: rotate-flow 4s linear infinite;
-    filter: blur(8px);
-}
-
-.video-monitor-frame::after {
-    content: '';
-    position: absolute;
-    inset: 8px; /* 內部黑色遮罩 */
-    background: #050505;
-    border-radius: 10px;
-    z-index: 1;
-}
-
-/* --- [副螢幕：全特效機翼] --- */
-.side-wing {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 140px;
-    height: 240px;
-    z-index: 5;
-    padding: 10px;
-    overflow: hidden; /* 為了讓機翼也有流水邊框 */
-    background: #000;
-    border-radius: 10px;
-}
-
-/* 副螢幕流水燈 (呼吸感) */
-.side-wing::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background: conic-gradient(transparent, var(--spark-blue), transparent 40%);
-    animation: rotate-flow 6s linear infinite reverse;
-    opacity: 0.6;
-}
-
-.side-wing::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    background: rgba(5, 5, 5, 0.9);
-    border-radius: 8px;
-    z-index: 1;
-}
-
-/* 機翼定位：向外推 40px，確保不被螢幕擋住，也不被網頁切掉 */
-.wing-l { 
-    left: -160px; 
-    clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%); 
-}
-.wing-r { 
-    right: -160px; 
-    clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%); 
-}
-
-/* 內部動態元件 */
-.wing-inner-content {
-    position: relative;
-    z-index: 5;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    font-family: 'Orbitron', sans-serif;
-    color: var(--spark-blue);
-}
-
-/* 跳動頻譜動畫 */
-.spectrum-box {
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 60px;
-}
-.spec-bar {
-    flex: 1;
-    background: var(--spark-blue);
-    height: 20%;
-    animation: bar-jump 0.5s ease-in-out infinite alternate;
-}
-
-@keyframes bar-jump {
-    0% { height: 10%; opacity: 0.3; }
-    100% { height: 80%; opacity: 1; box-shadow: 0 0 10px var(--spark-blue); }
-}
-
-@keyframes rotate-flow { 100% { transform: rotate(360deg); } }
-
-/* 響應式：小螢幕隱藏機翼 */
-@media (max-width: 1280px) {
-    .side-wing { display: none; }
-    .video-monitor-frame { width: 100%; }
-}
-
-/* (原本的螢幕配件與開機層樣式請保留) */
-.monitor-corner { position: absolute; width: 30px; height: 30px; border: 3px solid var(--spark-blue); z-index: 20; pointer-events: none; }
-.top-left { top: 5px; left: 5px; border-right: 0; border-bottom: 0; }
-.top-right { top: 5px; right: 5px; border-left: 0; border-bottom: 0; }
-.bottom-left { bottom: 5px; left: 5px; border-right: 0; border-top: 0; }
-.bottom-right { bottom: 5px; right: 5px; border-left: 0; border-top: 0; }
-.monitor-rec { position: absolute; top: 15px; left: 20px; z-index: 20; color: #ff4444; font-size: 10px; display: flex; align-items: center; gap: 5px; font-weight: 900; }
-.rec-dot { width: 6px; height: 6px; background: #ff4444; border-radius: 50%; animation: blink 1s infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-        /* 確保 boot-screen 覆蓋在影片上方 */
-.boot-screen {
-    position: absolute;
-    inset: 0;
-    background: #000;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--spark-blue);
-    font-family: 'Orbitron', sans-serif;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 1;
-    visibility: visible;
-}
-
-/* 當按鈕點擊後觸發此 Class */
-.boot-screen.hide {
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(1.1); /* 稍微放大淡出，更有啟動感 */
-    pointer-events: none;
-}
-
-/* 掃描線動畫：讓開機畫面更帥 */
-.boot-screen::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(129, 216, 208, 0.1) 50%, transparent 50%);
-    background-size: 100% 4px;
-    z-index: -1;
-}
-
-.boot-btn {
-    margin-top: 20px;
-    padding: 10px 30px;
-    border: 1px solid var(--spark-blue);
-    background: rgba(129, 216, 208, 0.1);
-    color: var(--spark-blue);
-    font-weight: bold;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.boot-btn:hover {
-    background: var(--spark-blue);
-    color: #000;
-    box-shadow: 0 0 20px var(--spark-blue);
-}
-        /* --- 加強版開機掃描線特效 --- */
-.boot-screen::after {
-    content: "";
-    position: absolute;
-    top: -100%; /* 起始位置在螢幕上方外 */
-    left: 0;
-    width: 100%;
-    height: 10px; /* 掃描線的粗度 */
-    background: linear-gradient(
-        to bottom,
-        transparent,
-        var(--spark-blue), /* 掃描線核心顏色 */
-        transparent
-    );
-    opacity: 0.5;
-    box-shadow: 0 0 20px var(--spark-blue); /* 掃描線發光效果 */
-    z-index: 10;
-    pointer-events: none; /* 確保不影響按鈕點擊 */
-    animation: full-scan 3s linear infinite; /* 動畫持續時間 3 秒 */
-}
-
-/* 掃描線由上而下的循環動畫 */
-@keyframes full-scan {
-    0% {
-        top: -10%;
+    /* === 開機掃描與 REC (完整保留) === */
+    .boot-screen {
+        position: absolute; inset: 0; background: #000; z-index: 100;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        color: var(--spark-blue); font-family: 'Orbitron', sans-serif; transition: all 0.8s ease;
     }
-    100% {
-        top: 110%;
+    .boot-screen.hide { opacity: 0; visibility: hidden; transform: scale(1.1); pointer-events: none; }
+    .boot-screen::after {
+        content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 10px;
+        background: linear-gradient(to bottom, transparent, var(--spark-blue), transparent);
+        box-shadow: 0 0 20px var(--spark-blue); animation: full-scan 3s linear infinite;
     }
-}
+    @keyframes full-scan { 0% { top: -10%; } 100% { top: 110%; } }
 
-/* REC 紅點閃爍 */
-@keyframes blink { 50% { opacity: 0; } }
-.rec-dot { animation: blink 1s infinite; }
-        /* --- 協會理念：SPARK 戰術裝甲樣式 --- */
-#about .glass-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* 確保內容水平置中 */
-    justify-content: center;
-    text-align: center;
-}
-/* 1. 背景科技網格 */
-#about .glass-box::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: 
-        linear-gradient(rgba(129, 216, 208, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(129, 216, 208, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-    z-index: -1;
-}
+    /* === 協會理念戰術裝甲 (完整保留) === */
+    #about .glass-box::before {
+        content: ""; position: absolute; inset: 0;
+        background-image: linear-gradient(rgba(129, 216, 208, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(129, 216, 208, 0.05) 1px, transparent 1px);
+        background-size: 20px 20px; z-index: -1;
+    }
+    .corner-tag { position: absolute; width: 20px; height: 20px; border: 2px solid var(--spark-blue); }
+    .tag-tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+    .tag-br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
 
-/* 2. 四角戰術配件 (L型邊框) */
-.glass-box .corner-tag {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--spark-blue);
-    pointer-events: none;
-}
-.tag-tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
-.tag-br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
-
-/* 3. 動態垂直掃描線 */
-#about .glass-box::after {
-    content: "";
-    position: absolute;
-    top: -100%;
-    left: 0;
-    width: 100%;
-    height: 100px;
-    background: linear-gradient(to bottom, transparent, rgba(129, 216, 208, 0.1), transparent);
-    animation: content-scan 4s linear infinite;
-}
-    </style>
+    /* === 能量呼吸燈 === */
+    .spark-logo-glow { animation: spark-energy 4s ease-in-out infinite; transition: all 0.4s; cursor: pointer; }
+    @keyframes spark-energy {
+        0%, 100% { filter: drop-shadow(0 0 10px rgba(129, 216, 208, 0.4)); transform: scale(1); }
+        50% { filter: drop-shadow(0 0 30px rgba(129, 216, 208, 0.9)); transform: scale(1.03); }
+    }
+</style>
 </head>
 <body>
     <div id="particles-js"></div>

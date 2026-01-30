@@ -854,6 +854,17 @@ if (menuBtn && mobileMenu) {
         });
     });
 }
+        function startMonitor() {
+    const overlay = document.getElementById('boot-overlay');
+    const video = document.getElementById('monitor-video');
+    
+    // 播放開機淡出動畫
+    overlay.classList.add('hide');
+    
+    // 模擬自動播放影片（如果瀏覽器允許）
+    const currentSrc = video.src;
+    video.src = currentSrc.replace("autoplay=0", "autoplay=1");
+}
     </script>
 </body>
 </html>

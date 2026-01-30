@@ -370,150 +370,127 @@
     text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
     z-index: 2001;
 }
-/* --- SPARK 觸控工作站 4.0 終極版 --- */
-
-/* 修正：把漏掉的流水燈動畫補回來 */
-@keyframes monitor-flow {
-    100% { transform: rotate(360deg); }
-}
-
+/* --- 核心容器：修正光芒噴發與比例 --- */
 .video-monitor-frame {
     position: relative;
-    width: 100%;
+    width: 95%;
     max-width: 900px;
-    margin: 100px auto; /* 增加間距給機翼空間 */
-    padding: 18px; 
+    margin: 80px auto;
+    padding: 12px;
     background: #000;
     border: 1px solid rgba(129, 216, 208, 0.4);
     border-radius: 12px;
-    box-shadow: 0 0 50px rgba(129, 216, 208, 0.15);
+    box-shadow: 0 0 40px rgba(129, 216, 208, 0.15);
+    z-index: 10;
 }
 
-/* 霓虹流水邊框 (重新啟動！) */
+/* 霓虹流水邊框：修正為精緻邊框模式，不再炸開 */
 .video-monitor-frame::before {
     content: '';
     position: absolute;
-    inset: -150%;
-    background: conic-gradient(from 0deg, transparent, var(--spark-blue), transparent 30%, var(--spark-purple), transparent 70%, transparent 100%);
+    inset: -2px; /* 緊貼邊框，不向外噴發 */
+    background: conic-gradient(
+        from 0deg, 
+        transparent, 
+        var(--spark-blue), 
+        transparent 30%, 
+        var(--spark-purple), 
+        transparent 70%, 
+        transparent 100%
+    );
     animation: monitor-flow 4s linear infinite;
-    z-index: 0;
-}
-
-/* === 新增：側邊數據機翼 (Data Wings) === */
-.monitor-wing {
-    position: absolute;
-    top: 50%;
-    width: 60px;
-    height: 180px;
-    background: rgba(129, 216, 208, 0.05);
-    border: 1px solid rgba(129, 216, 208, 0.2);
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 10px;
-    backdrop-filter: blur(5px);
     z-index: -1;
+    border-radius: 14px;
 }
-.wing-left { left: -70px; border-right: 4px solid var(--spark-blue); clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%); }
-.wing-right { right: -70px; border-left: 4px solid var(--spark-blue); clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%); }
 
-.data-bar {
-    width: 100%;
-    height: 4px;
-    background: rgba(129, 216, 208, 0.2);
+/* 內層容器：強制 16:9 黃金比例，解決變扁問題 */
+.video-inner-box {
     position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: 56.25%; /* 16:9 比例鎖定 */
+    background: #000;
+    border-radius: 6px;
+    z-index: 1;
     overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.08);
 }
-.data-bar::after {
+
+/* === 保留：3.0 玻璃反光特效 === */
+.glass-reflection {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 15%, transparent 30%, rgba(255, 255, 255, 0.03) 35%, transparent 70%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* === 保留：3.0 邊緣暗角與掃描線 === */
+.video-inner-box::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; height: 100%; width: 50%;
-    background: var(--spark-blue);
-    animation: data-pulse 2s ease-in-out infinite;
+    inset: 0;
+    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 150%);
+    z-index: 11;
+    pointer-events: none;
 }
 
-/* === 新增：高科技開機開場動畫 === */
-.boot-screen {
+.video-monitor-frame::after {
+    content: "";
     position: absolute;
     inset: 0;
-    background: #000;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Orbitron', sans-serif;
-    color: var(--spark-blue);
-    transition: opacity 1s ease, visibility 1s;
+    background: linear-gradient(rgba(129, 216, 208, 0) 0%, rgba(129, 216, 208, 0.08) 50%, rgba(129, 216, 208, 0) 100%);
+    background-size: 100% 8px;
+    z-index: 12;
+    pointer-events: none;
+    animation: scanline-move 6s linear infinite;
+    opacity: 0.6;
 }
 
-.boot-screen.hide {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.scan-line {
-    width: 80%;
-    height: 2px;
-    background: var(--spark-blue);
-    box-shadow: 0 0 15px var(--spark-blue);
-    position: absolute;
-    top: 0;
-    animation: scan-move 2s linear infinite;
-}
-
-@keyframes scan-move { 0% { top: 0; } 100% { top: 100%; } }
-@keyframes data-pulse { 0%, 100% { width: 10%; } 50% { width: 90%; } }
-
-/* 修正掃描線與原有關聯 */
-@keyframes scanline-move { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
-/* === 新增：紅點 REC 閃爍特效 === */
+/* === 保留：REC 閃爍與開機動畫 === */
 .monitor-rec {
     position: absolute;
-    top: 20px;
-    left: 30px;
-    color: #ff4444;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 12px;
-    font-weight: 900;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    top: 20px; left: 30px;
+    color: #ff4444; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900;
+    z-index: 20; display: flex; align-items: center; gap: 8px;
     text-shadow: 0 0 10px #ff4444;
 }
-.rec-dot {
-    width: 8px;
-    height: 8px;
-    background: #ff4444;
-    border-radius: 50%;
-    animation: blink 1s infinite;
-}
+.rec-dot { width: 8px; height: 8px; background: #ff4444; border-radius: 50%; animation: blink 1s infinite; }
 
-/* HUD 裝飾強化 */
-.hud-line { position: absolute; background: var(--spark-blue); opacity: 0.8; z-index: 15; box-shadow: 0 0 10px var(--spark-blue); }
-.hud-h { width: 60px; height: 1px; }
-.hud-v { width: 1px; height: 60px; }
-.t-mark { top: 0; left: 50%; transform: translateX(-50%); }
-.b-mark { bottom: 0; left: 50%; transform: translateX(-50%); }
-.l-mark { left: 0; top: 50%; transform: translateY(-50%); }
-.r-mark { right: 0; top: 50%; transform: translateY(-50%); }
+.boot-screen {
+    position: absolute; inset: 0; background: #000; z-index: 100;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: 'Orbitron', sans-serif; color: var(--spark-blue);
+    transition: opacity 1s ease, visibility 1s;
+}
+.boot-screen.hide { opacity: 0; visibility: hidden; }
+
+/* === 修正：機翼與護角 === */
+.monitor-wing {
+    position: absolute; top: 50%; width: 50px; height: 160px;
+    background: rgba(129, 216, 208, 0.05); border: 1px solid rgba(129, 216, 208, 0.2);
+    transform: translateY(-50%); z-index: -2;
+}
+.wing-left { left: -60px; border-right: 3px solid var(--spark-blue); clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%); }
+.wing-right { right: -60px; border-left: 3px solid var(--spark-blue); clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%); }
 
 .monitor-corner {
-    position: absolute; width: 50px; height: 50px;
-    border: 4px solid var(--spark-blue); z-index: 20;
-    pointer-events: none; filter: drop-shadow(0 0 15px var(--spark-blue));
+    position: absolute; width: 40px; height: 40px;
+    border: 3px solid var(--spark-blue); z-index: 20;
+    pointer-events: none; filter: drop-shadow(0 0 10px var(--spark-blue));
 }
 .top-left { top: -2px; left: -2px; border-right: 0; border-bottom: 0; border-radius: 12px 0 0 0; }
 .top-right { top: -2px; right: -2px; border-left: 0; border-bottom: 0; border-radius: 0 12px 0 0; }
 .bottom-left { bottom: -2px; left: -2px; border-right: 0; border-top: 0; border-radius: 0 0 0 12px; }
 .bottom-right { bottom: -2px; right: -2px; border-left: 0; border-top: 0; border-radius: 0 0 12px 0; }
 
-@keyframes scanline-move {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100%; }
-}
+/* 讓 iframe 絕對定位撐滿 16:9 容器 */
+#monitor-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+/* 動畫定義 */
+@keyframes monitor-flow { 100% { transform: rotate(360deg); } }
+@keyframes scanline-move { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
+@keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>

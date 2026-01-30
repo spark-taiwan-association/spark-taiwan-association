@@ -370,23 +370,24 @@
     text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
     z-index: 2001;
 }
-/* --- SPARK 戰術螢幕 2.0 升級版 --- */
+/* --- SPARK 戰術螢幕 3.0 極致強化版 --- */
 .video-monitor-frame {
     position: relative;
     width: 100%;
     max-width: 900px;
     margin: 60px auto;
-    padding: 18px; /* 稍微增加厚度，更有層次感 */
-    background: #0a0a0a;
-    border: 1px solid rgba(129, 216, 208, 0.3);
+    padding: 18px; 
+    background: #000;
+    border: 1px solid rgba(129, 216, 208, 0.4);
     border-radius: 12px;
+    /* 強化外層光暈，讓它有厚度感 */
     box-shadow: 
-        0 0 40px rgba(129, 216, 208, 0.1),
-        inset 0 0 30px rgba(0, 0, 0, 1);
+        0 0 50px rgba(129, 216, 208, 0.15),
+        inset 0 0 20px rgba(0, 0, 0, 1);
     overflow: hidden;
 }
 
-/* 霓虹流水邊框 (維持昨天的酷炫效果) */
+/* 霓虹流水邊框 (增加流動速度感) */
 .video-monitor-frame::before {
     content: '';
     position: absolute;
@@ -395,17 +396,16 @@
         from 0deg, 
         transparent, 
         var(--spark-blue), 
-        transparent 20%, 
-        transparent 50%, 
+        transparent 30%, 
         var(--spark-purple), 
         transparent 70%,
         transparent 100%
     );
-    animation: monitor-flow 5s linear infinite;
+    animation: monitor-flow 4s linear infinite;
     z-index: 0;
 }
 
-/* 內層黑底墊片與 HUD 裝飾 */
+/* 內層黑底墊片 */
 .video-inner-box {
     position: relative;
     background: #000;
@@ -413,77 +413,97 @@
     z-index: 1;
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.08);
 }
 
-/* === 新增：玻璃反光層 === */
+/* === 強化：玻璃反光 (變亮且增加多道光) === */
 .glass-reflection {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(
         135deg, 
-        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0.15) 0%, 
         rgba(255, 255, 255, 0.05) 15%, 
-        transparent 50%
+        transparent 30%,
+        rgba(255, 255, 255, 0.03) 35%,
+        transparent 70%
     );
     pointer-events: none;
-    z-index: 6; /* 位於掃描線之下，影片之上 */
+    z-index: 10;
 }
 
-/* === 新增：動態掃描線動畫 === */
+/* === 強化：邊緣暗角 (Vignette) - 讓螢幕有凹陷進去的立體感 === */
+.video-inner-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 150%);
+    z-index: 11;
+    pointer-events: none;
+}
+
+/* === 強化：動態掃描線 (線條變明顯、速度加快) === */
 .video-monitor-frame::after {
     content: "";
     position: absolute;
     inset: 0;
-    /* 強化掃描線紋理 */
     background: linear-gradient(
-        rgba(129, 216, 208, 0) 50%, 
-        rgba(129, 216, 208, 0.05) 50%
+        rgba(129, 216, 208, 0) 0%, 
+        rgba(129, 216, 208, 0.08) 50%,
+        rgba(129, 216, 208, 0) 100%
     );
-    background-size: 100% 4px;
-    z-index: 7;
+    background-size: 100% 8px; /* 加粗掃描線 */
+    z-index: 12;
     pointer-events: none;
-    animation: scanline-move 10s linear infinite; /* 讓掃描線微微移動 */
+    animation: scanline-move 6s linear infinite;
+    opacity: 0.6;
 }
 
-/* === 新增：HUD 數位刻度裝飾 (上下左右的小線條) === */
-.hud-line {
+/* === 新增：紅點 REC 閃爍特效 === */
+.monitor-rec {
     position: absolute;
-    background: var(--spark-blue);
-    opacity: 0.5;
-    z-index: 8;
+    top: 20px;
+    left: 30px;
+    color: #ff4444;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-shadow: 0 0 10px #ff4444;
 }
-.hud-h { width: 40px; height: 1px; }
-.hud-v { width: 1px; height: 40px; }
+.rec-dot {
+    width: 8px;
+    height: 8px;
+    background: #ff4444;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+}
+
+/* HUD 裝飾強化 */
+.hud-line { position: absolute; background: var(--spark-blue); opacity: 0.8; z-index: 15; box-shadow: 0 0 10px var(--spark-blue); }
+.hud-h { width: 60px; height: 1px; }
+.hud-v { width: 1px; height: 60px; }
 .t-mark { top: 0; left: 50%; transform: translateX(-50%); }
 .b-mark { bottom: 0; left: 50%; transform: translateX(-50%); }
 .l-mark { left: 0; top: 50%; transform: translateY(-50%); }
 .r-mark { right: 0; top: 50%; transform: translateY(-50%); }
 
-/* 護角調整（讓它稍微凸出感） */
 .monitor-corner {
-    position: absolute;
-    width: 45px;
-    height: 45px;
-    border: 3px solid var(--spark-blue);
-    z-index: 10;
-    pointer-events: none;
-    filter: drop-shadow(0 0 15px var(--spark-blue));
+    position: absolute; width: 50px; height: 50px;
+    border: 4px solid var(--spark-blue); z-index: 20;
+    pointer-events: none; filter: drop-shadow(0 0 15px var(--spark-blue));
 }
-/* 座標調整以符合厚度 */
 .top-left { top: -2px; left: -2px; border-right: 0; border-bottom: 0; border-radius: 12px 0 0 0; }
 .top-right { top: -2px; right: -2px; border-left: 0; border-bottom: 0; border-radius: 0 12px 0 0; }
 .bottom-left { bottom: -2px; left: -2px; border-right: 0; border-top: 0; border-radius: 0 0 0 12px; }
 .bottom-right { bottom: -2px; right: -2px; border-left: 0; border-top: 0; border-radius: 0 0 12px 0; }
 
-/* 掃描線位移動畫 */
 @keyframes scanline-move {
     0% { background-position: 0 0; }
     100% { background-position: 0 100%; }
-}
-
-@keyframes monitor-flow {
-    100% { transform: rotate(360deg); }
 }
     </style>
 </head>
@@ -560,14 +580,7 @@
         </p>
     </div>
 </section>
-<section id="records" class="py-20 bg-[#050505] relative overflow-hidden">
-    <div class="container mx-auto px-4 relative z-10">
-        <div class="text-center mb-12">
-            <h2 class="section-title">MISSION RECORDS</h2>
-            <p class="text-[var(--spark-blue)] tracking-[10px] uppercase font-bold text-sm md:text-lg opacity-80 -mt-8">年度賽事紀錄回顧</p>
-        </div>
-
-       <div class="video-monitor-frame">
+<div class="video-monitor-frame">
     <div class="monitor-corner top-left"></div>
     <div class="monitor-corner top-right"></div>
     <div class="monitor-corner bottom-left"></div>
@@ -579,6 +592,10 @@
     <div class="hud-line hud-v r-mark"></div>
     
     <div class="video-inner-box">
+        <div class="monitor-rec">
+            <div class="rec-dot"></div> REC ● LIVE
+        </div>
+
         <div class="glass-reflection"></div>
         
         <iframe 
@@ -587,7 +604,7 @@
             src="https://www.youtube.com/embed/b4xGeCfHBXA?autoplay=0&rel=0&modestbranding=1" 
             title="SPARK 紀錄影片" 
             frameborder="0" 
-            allow="..." 
+            class="relative z-0"
             allowfullscreen>
         </iframe>
     </div>

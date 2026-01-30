@@ -370,95 +370,104 @@
     text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
     z-index: 2001;
 }
-/* --- SPARK 戰術螢幕 3.0 極致強化版 --- */
+/* --- SPARK 觸控工作站 4.0 終極版 --- */
+
+/* 修正：把漏掉的流水燈動畫補回來 */
+@keyframes monitor-flow {
+    100% { transform: rotate(360deg); }
+}
+
 .video-monitor-frame {
     position: relative;
     width: 100%;
     max-width: 900px;
-    margin: 60px auto;
+    margin: 100px auto; /* 增加間距給機翼空間 */
     padding: 18px; 
     background: #000;
     border: 1px solid rgba(129, 216, 208, 0.4);
     border-radius: 12px;
-    /* 強化外層光暈，讓它有厚度感 */
-    box-shadow: 
-        0 0 50px rgba(129, 216, 208, 0.15),
-        inset 0 0 20px rgba(0, 0, 0, 1);
-    overflow: hidden;
+    box-shadow: 0 0 50px rgba(129, 216, 208, 0.15);
 }
 
-/* 霓虹流水邊框 (增加流動速度感) */
+/* 霓虹流水邊框 (重新啟動！) */
 .video-monitor-frame::before {
     content: '';
     position: absolute;
     inset: -150%;
-    background: conic-gradient(
-        from 0deg, 
-        transparent, 
-        var(--spark-blue), 
-        transparent 30%, 
-        var(--spark-purple), 
-        transparent 70%,
-        transparent 100%
-    );
+    background: conic-gradient(from 0deg, transparent, var(--spark-blue), transparent 30%, var(--spark-purple), transparent 70%, transparent 100%);
     animation: monitor-flow 4s linear infinite;
     z-index: 0;
 }
 
-/* 內層黑底墊片 */
-.video-inner-box {
-    position: relative;
-    background: #000;
-    border-radius: 6px;
-    z-index: 1;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.08);
-}
-
-/* === 強化：玻璃反光 (變亮且增加多道光) === */
-.glass-reflection {
+/* === 新增：側邊數據機翼 (Data Wings) === */
+.monitor-wing {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(
-        135deg, 
-        rgba(255, 255, 255, 0.15) 0%, 
-        rgba(255, 255, 255, 0.05) 15%, 
-        transparent 30%,
-        rgba(255, 255, 255, 0.03) 35%,
-        transparent 70%
-    );
-    pointer-events: none;
-    z-index: 10;
+    top: 50%;
+    width: 60px;
+    height: 180px;
+    background: rgba(129, 216, 208, 0.05);
+    border: 1px solid rgba(129, 216, 208, 0.2);
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px;
+    backdrop-filter: blur(5px);
+    z-index: -1;
 }
+.wing-left { left: -70px; border-right: 4px solid var(--spark-blue); clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%); }
+.wing-right { right: -70px; border-left: 4px solid var(--spark-blue); clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%); }
 
-/* === 強化：邊緣暗角 (Vignette) - 讓螢幕有凹陷進去的立體感 === */
-.video-inner-box::before {
+.data-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(129, 216, 208, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+.data-bar::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 150%);
-    z-index: 11;
-    pointer-events: none;
+    top: 0; left: 0; height: 100%; width: 50%;
+    background: var(--spark-blue);
+    animation: data-pulse 2s ease-in-out infinite;
 }
 
-/* === 強化：動態掃描線 (線條變明顯、速度加快) === */
-.video-monitor-frame::after {
-    content: "";
+/* === 新增：高科技開機開場動畫 === */
+.boot-screen {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        rgba(129, 216, 208, 0) 0%, 
-        rgba(129, 216, 208, 0.08) 50%,
-        rgba(129, 216, 208, 0) 100%
-    );
-    background-size: 100% 8px; /* 加粗掃描線 */
-    z-index: 12;
-    pointer-events: none;
-    animation: scanline-move 6s linear infinite;
-    opacity: 0.6;
+    background: #000;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--spark-blue);
+    transition: opacity 1s ease, visibility 1s;
 }
 
+.boot-screen.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.scan-line {
+    width: 80%;
+    height: 2px;
+    background: var(--spark-blue);
+    box-shadow: 0 0 15px var(--spark-blue);
+    position: absolute;
+    top: 0;
+    animation: scan-move 2s linear infinite;
+}
+
+@keyframes scan-move { 0% { top: 0; } 100% { top: 100%; } }
+@keyframes data-pulse { 0%, 100% { width: 10%; } 50% { width: 90%; } }
+
+/* 修正掃描線與原有關聯 */
+@keyframes scanline-move { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
 /* === 新增：紅點 REC 閃爍特效 === */
 .monitor-rec {
     position: absolute;
@@ -580,35 +589,48 @@
         </p>
     </div>
 </section>
-<div class="video-monitor-frame">
-    <div class="monitor-corner top-left"></div>
-    <div class="monitor-corner top-right"></div>
-    <div class="monitor-corner bottom-left"></div>
-    <div class="monitor-corner bottom-right"></div>
-    
-    <div class="hud-line hud-h t-mark"></div>
-    <div class="hud-line hud-h b-mark"></div>
-    <div class="hud-line hud-v l-mark"></div>
-    <div class="hud-line hud-v r-mark"></div>
-    
-    <div class="video-inner-box">
-        <div class="monitor-rec">
-            <div class="rec-dot"></div> REC ● LIVE
-        </div>
+<section id="records" class="py-20 bg-[#050505] relative overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="video-monitor-frame">
+            <div class="monitor-wing wing-left md:flex hidden">
+                <div class="data-bar"></div>
+                <div class="data-bar" style="animation-delay: 0.5s"></div>
+                <div class="data-bar" style="animation-delay: 1.2s"></div>
+                <div class="text-[8px] font-mono opacity-50">SYS_RUN</div>
+            </div>
+            <div class="monitor-wing wing-right md:flex hidden">
+                <div class="data-bar" style="animation-delay: 0.3s"></div>
+                <div class="data-bar"></div>
+                <div class="data-bar" style="animation-delay: 0.8s"></div>
+                <div class="text-[8px] font-mono opacity-50">SYNC_OK</div>
+            </div>
 
-        <div class="glass-reflection"></div>
-        
-        <iframe 
-            width="100%" 
-            height="100%" 
-            src="https://www.youtube.com/embed/b4xGeCfHBXA?autoplay=0&rel=0&modestbranding=1" 
-            title="SPARK 紀錄影片" 
-            frameborder="0" 
-            class="relative z-0"
-            allowfullscreen>
-        </iframe>
-    </div>
-</div>
+            <div class="monitor-corner top-left"></div>
+            <div class="monitor-corner top-right"></div>
+            <div class="monitor-corner bottom-left"></div>
+            <div class="monitor-corner bottom-right"></div>
+
+            <div class="video-inner-box">
+                <div id="boot-overlay" class="boot-screen">
+                    <div class="scan-line"></div>
+                    <div class="mb-4 animate-pulse">SYSTEM INITIALIZING...</div>
+                    <div class="text-[10px] tracking-[4px]">AI_CORE: ONLINE</div>
+                    <button onclick="startMonitor()" class="mt-6 px-4 py-1 border border-[var(--spark-blue)] text-xs hover:bg-[var(--spark-blue)] hover:text-black transition">
+                        ENTER SYSTEM
+                    </button>
+                </div>
+
+                <div class="monitor-rec"><div class="rec-dot"></div> REC ● LIVE</div>
+                <div class="glass-reflection"></div>
+                
+                <iframe id="monitor-video" width="100%" height="100%" 
+                    src="https://www.youtube.com/embed/b4xGeCfHBXA?autoplay=0&mute=1&rel=0&modestbranding=1" 
+                    title="SPARK 紀錄影片" frameborder="0" allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+        </div>
+</section>
         
         <div class="flex justify-between max-w-[900px] mx-auto mt-4 text-[10px] font-mono text-gray-600 tracking-widest uppercase">
             <span>System Status: Optimal</span>

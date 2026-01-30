@@ -370,115 +370,115 @@
     text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
     z-index: 2001;
 }
-/* --- SPARK ULTIMATE MONITOR 4.5 修正版 --- */
+/* --- SPARK MAX 版 螢幕樣式 --- */
 
-/* 1. 擴大主容器，確保側邊機翼有空間不被切割 */
+/* 1. 主容器：擴大寬度並確保側邊配件不被 overflow:hidden 切掉 */
 .ultimate-monitor-container {
     position: relative;
     width: 100%;
-    max-width: 1100px; /* 從 900px 增加到 1100px */
-    margin: 40px auto;
+    max-width: 1100px; /* 加寬確保機翼空間 */
+    margin: 0 auto;
     z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-/* 2. 強化流水燈：變粗、變亮，且鎖定在邊框 */
+/* 2. 流水燈邊框：加粗、加亮 */
 .video-monitor-frame {
     position: relative;
     width: 100%;
-    max-width: 850px; /* 固定螢幕寬度 */
-    padding: 15px; /* 增加間隔讓燈條更厚 */
+    max-width: 860px; /* 螢幕主體寬度 */
+    margin: 0 auto;
+    padding: 16px; /* 增加 padding = 增加流水燈粗度 */
     background: #000;
     border-radius: 12px;
     z-index: 5;
-    overflow: hidden; /* 鎖住燈光不亂噴 */
-    box-shadow: 0 0 50px rgba(0,0,0,1);
+    overflow: hidden; /* 鎖住流動光效 */
+    box-shadow: 0 0 60px rgba(0,0,0,1);
 }
 
-/* 昨天的「粗壯」燈效回歸：透過增大 inset 並調整漸變 */
+/* 霓虹流水燈：加粗效果核心 */
 .video-monitor-frame::before {
     content: '';
     position: absolute;
-    /* 核心修正：讓旋轉層大到足以覆蓋邊角，但被外層容器剪裁 */
     top: -50%; left: -50%; width: 200%; height: 200%;
     background: conic-gradient(
+        from 0deg,
         transparent, 
-        var(--spark-blue) 10%, 
-        transparent 25%, 
-        var(--spark-purple) 50%, 
-        transparent 75%, 
-        var(--spark-blue) 90%
+        var(--spark-blue) 15%, 
+        transparent 30%, 
+        var(--spark-purple) 65%, 
+        transparent 80%,
+        var(--spark-blue) 100%
     );
-    animation: rotate-flow 3s linear infinite; /* 速度稍微加快更有動感 */
+    animation: rotate-flow 3.5s linear infinite;
     z-index: 0;
-    filter: blur(8px); /* 增加羽化感，讓燈條看起來更粗 */
+    filter: blur(10px); /* 增加羽化讓光條看起來更粗、有霓虹感 */
 }
 
-/* 內層遮罩：決定邊框的「粗細」 */
+/* 內遮罩：控制流水燈顯示的寬度 */
 .video-monitor-frame::after {
     content: '';
     position: absolute;
-    inset: 6px; /* 數值越大，邊框燈條就越粗！(昨天那種明顯感) */
+    inset: 8px; /* 數值越大，流水燈邊框就顯得越粗壯 */
     background: #050505;
     border-radius: 8px;
     z-index: 1;
 }
 
-/* 3. 機翼位置修正：往內縮一點，防止螢幕邊緣切割 */
+/* 3. 機翼配件：絕對定位在主容器兩側，不受螢幕 overflow 影響 */
 .side-wing {
     position: absolute;
-    top: 50%;
+    top: 40%;
     transform: translateY(-50%);
-    width: 100px; /* 縮小寬度防止超出網頁邊框 */
-    height: 180px;
+    width: 110px;
+    height: 160px;
     background: rgba(129, 216, 208, 0.03);
     border: 1px solid rgba(129, 216, 208, 0.2);
-    backdrop-filter: blur(5px);
-    z-index: 1;
+    backdrop-filter: blur(8px);
+    z-index: 4; /* 高於背景，低於螢幕外框 */
 }
+.wing-l { left: -10px; border-right: 4px solid var(--spark-blue); clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%); }
+.wing-r { right: -10px; border-left: 4px solid var(--spark-blue); clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%); }
 
-/* 調整機翼與主螢幕的距離 */
-.wing-l { left: -110px; border-right: 4px solid var(--spark-blue); clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%); }
-.wing-r { right: -110px; border-left: 4px solid var(--spark-blue); clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%); }
+.m-bar, .m-bar-r { height: 4px; margin-top: 6px; width: 100%; border-radius: 2px; }
 
-/* 修正開機按鈕與文字 */
+/* 4. 開機動畫層修正 */
+.boot-screen {
+    position: absolute; inset: 0; background: #000; z-index: 100;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--spark-blue); font-family: 'Orbitron', sans-serif;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.boot-screen.hide { opacity: 0; visibility: hidden; transform: scale(1.1); }
+
 .boot-btn {
     margin-top: 30px;
-    padding: 10px 30px;
+    padding: 12px 35px;
     border: 2px solid var(--spark-blue);
     background: rgba(129, 216, 208, 0.1);
     color: var(--spark-blue);
-    font-family: 'Orbitron', sans-serif;
     font-weight: bold;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: 0.3s;
     text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(129, 216, 208, 0.2);
 }
 .boot-btn:hover {
     background: var(--spark-blue);
     color: #000;
     box-shadow: 0 0 30px var(--spark-blue);
 }
-/* 其他特效 */
-.monitor-rec { position: absolute; top: 15px; left: 20px; z-index: 20; color: #ff4444; font-size: 10px; font-weight: 900; display: flex; align-items: center; gap: 5px; }
-.rec-dot { width: 6px; height: 6px; background: #ff4444; border-radius: 50%; animation: blink 1s infinite; }
-.glass-reflection { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 40%); z-index: 10; pointer-events: none; }
-.crt-scanline { position: absolute; inset: 0; background: linear-gradient(rgba(129,216,208,0.03) 50%, transparent 50%); background-size: 100% 4px; z-index: 11; pointer-events: none; }
 
-/* 護角 */
-.monitor-corner { position: absolute; width: 30px; height: 30px; border: 3px solid var(--spark-blue); z-index: 20; pointer-events: none; }
-.top-left { top: 5px; left: 5px; border-right: 0; border-bottom: 0; }
-.top-right { top: 5px; right: 5px; border-left: 0; border-bottom: 0; }
-.bottom-left { bottom: 5px; left: 5px; border-right: 0; border-top: 0; }
-.bottom-right { bottom: 5px; right: 5px; border-left: 0; border-top: 0; }
+/* 影片鎖定 16:9 */
+.video-inner-box {
+    position: relative; width: 100%; padding-top: 56.25%; z-index: 2;
+    background: #000; border-radius: 6px; overflow: hidden;
+}
+#monitor-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
+/* 動畫定義 */
 @keyframes rotate-flow { 100% { transform: rotate(360deg); } }
-@keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
-@keyframes blink { 50% { opacity: 0; } }
-
+@keyframes scanline-move { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
 /* 底部基座 */
 .monitor-pedestal { margin-top: 10px; text-align: center; }
 .pedestal-line { height: 2px; width: 60%; background: linear-gradient(90deg, transparent, var(--spark-blue), transparent); margin: 0 auto; }

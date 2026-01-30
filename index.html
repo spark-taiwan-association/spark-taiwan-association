@@ -567,6 +567,36 @@
     color: #000;
     box-shadow: 0 0 20px var(--spark-blue);
 }
+        /* --- 加強版開機掃描線特效 --- */
+.boot-screen::after {
+    content: "";
+    position: absolute;
+    top: -100%; /* 起始位置在螢幕上方外 */
+    left: 0;
+    width: 100%;
+    height: 10px; /* 掃描線的粗度 */
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--spark-blue), /* 掃描線核心顏色 */
+        transparent
+    );
+    opacity: 0.5;
+    box-shadow: 0 0 20px var(--spark-blue); /* 掃描線發光效果 */
+    z-index: 10;
+    pointer-events: none; /* 確保不影響按鈕點擊 */
+    animation: full-scan 3s linear infinite; /* 動畫持續時間 3 秒 */
+}
+
+/* 掃描線由上而下的循環動畫 */
+@keyframes full-scan {
+    0% {
+        top: -10%;
+    }
+    100% {
+        top: 110%;
+    }
+}
 
 /* REC 紅點閃爍 */
 @keyframes blink { 50% { opacity: 0; } }

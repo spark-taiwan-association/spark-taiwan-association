@@ -370,103 +370,98 @@
     text-shadow: 0 0 10px rgba(129, 216, 208, 0.5);
     z-index: 2001;
 }
-/* --- SPARK ULTIMATE MONITOR 4.5 --- */
-:root {
-    --spark-blue: #81d8d0;
-    --spark-purple: #a855f7;
-}
+/* --- SPARK ULTIMATE MONITOR 4.5 修正版 --- */
 
-/* 主容器：確保機翼不會被切掉 */
+/* 1. 擴大主容器，確保側邊機翼有空間不被切割 */
 .ultimate-monitor-container {
     position: relative;
     width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
+    max-width: 1100px; /* 從 900px 增加到 1100px */
+    margin: 40px auto;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* 螢幕外框：控制流水燈只在邊框旋轉 */
+/* 2. 強化流水燈：變粗、變亮，且鎖定在邊框 */
 .video-monitor-frame {
     position: relative;
-    padding: 12px;
+    width: 100%;
+    max-width: 850px; /* 固定螢幕寬度 */
+    padding: 15px; /* 增加間隔讓燈條更厚 */
     background: #000;
     border-radius: 12px;
     z-index: 5;
-    overflow: hidden; /* 關鍵：鎖住流水燈不外溢 */
-    box-shadow: 0 0 40px rgba(0,0,0,1);
+    overflow: hidden; /* 鎖住燈光不亂噴 */
+    box-shadow: 0 0 50px rgba(0,0,0,1);
 }
 
-/* 霓虹流水邊框：旋轉漸變層 */
+/* 昨天的「粗壯」燈效回歸：透過增大 inset 並調整漸變 */
 .video-monitor-frame::before {
     content: '';
     position: absolute;
+    /* 核心修正：讓旋轉層大到足以覆蓋邊角，但被外層容器剪裁 */
     top: -50%; left: -50%; width: 200%; height: 200%;
     background: conic-gradient(
-        transparent, var(--spark-blue), transparent 30%, 
-        var(--spark-purple), transparent 70%
+        transparent, 
+        var(--spark-blue) 10%, 
+        transparent 25%, 
+        var(--spark-purple) 50%, 
+        transparent 75%, 
+        var(--spark-blue) 90%
     );
-    animation: rotate-flow 4s linear infinite;
+    animation: rotate-flow 3s linear infinite; /* 速度稍微加快更有動感 */
     z-index: 0;
+    filter: blur(8px); /* 增加羽化感，讓燈條看起來更粗 */
 }
 
-/* 內層遮罩：蓋在旋轉光效上，露出邊框線 */
+/* 內層遮罩：決定邊框的「粗細」 */
 .video-monitor-frame::after {
     content: '';
     position: absolute;
-    inset: 3px; /* 邊框粗細度 */
+    inset: 6px; /* 數值越大，邊框燈條就越粗！(昨天那種明顯感) */
     background: #050505;
-    border-radius: 10px;
+    border-radius: 8px;
     z-index: 1;
 }
 
-/* 內層影片容器：強制 16:9 */
-.video-inner-box {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%; /* 鎖定比例 */
-    z-index: 2;
-    background: #000;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-#monitor-video {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-}
-
-/* --- 高科技機翼配件 --- */
+/* 3. 機翼位置修正：往內縮一點，防止螢幕邊緣切割 */
 .side-wing {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 120px;
-    height: 200px;
+    width: 100px; /* 縮小寬度防止超出網頁邊框 */
+    height: 180px;
     background: rgba(129, 216, 208, 0.03);
     border: 1px solid rgba(129, 216, 208, 0.2);
     backdrop-filter: blur(5px);
     z-index: 1;
 }
-.wing-l { left: -140px; border-right: 4px solid var(--spark-blue); clip-path: polygon(0 0, 100% 20%, 100% 80%, 0 100%); }
-.wing-r { right: -140px; border-left: 4px solid var(--spark-blue); clip-path: polygon(0 20%, 100% 0, 100% 100%, 0 80%); }
 
-.wing-content { padding: 15px; color: var(--spark-blue); font-family: 'Orbitron', sans-serif; }
-.wing-tag { font-size: 8px; font-weight: bold; border-bottom: 1px solid rgba(129, 216, 208, 0.3); padding-bottom: 5px; }
-.m-bar { height: 4px; background: var(--spark-blue); margin-top: 5px; width: 80%; box-shadow: 0 0 5px var(--spark-blue); }
-.m-bar-r { height: 4px; background: var(--spark-purple); margin-top: 5px; width: 90%; }
+/* 調整機翼與主螢幕的距離 */
+.wing-l { left: -110px; border-right: 4px solid var(--spark-blue); clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%); }
+.wing-r { right: -110px; border-left: 4px solid var(--spark-blue); clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%); }
 
-/* --- 開機動畫特效 --- */
-.boot-screen {
-    position: absolute; inset: 0; background: #000; z-index: 100;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: var(--spark-blue); font-family: 'Orbitron', sans-serif;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+/* 修正開機按鈕與文字 */
+.boot-btn {
+    margin-top: 30px;
+    padding: 10px 30px;
+    border: 2px solid var(--spark-blue);
+    background: rgba(129, 216, 208, 0.1);
+    color: var(--spark-blue);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
 }
-.boot-screen.hide { opacity: 0; visibility: hidden; transform: scale(1.1); }
-.scan-line-loader { position: absolute; width: 100%; height: 2px; background: var(--spark-blue); box-shadow: 0 0 20px var(--spark-blue); top: 0; animation: scanning 2s linear infinite; }
-.boot-btn { margin-top: 30px; padding: 10px 25px; border: 1px solid var(--spark-blue); background: transparent; color: var(--spark-blue); cursor: pointer; transition: 0.3s; }
-.boot-btn:hover { background: var(--spark-blue); color: #000; box-shadow: 0 0 20px var(--spark-blue); }
-
+.boot-btn:hover {
+    background: var(--spark-blue);
+    color: #000;
+    box-shadow: 0 0 30px var(--spark-blue);
+}
 /* 其他特效 */
 .monitor-rec { position: absolute; top: 15px; left: 20px; z-index: 20; color: #ff4444; font-size: 10px; font-weight: 900; display: flex; align-items: center; gap: 5px; }
 .rec-dot { width: 6px; height: 6px; background: #ff4444; border-radius: 50%; animation: blink 1s infinite; }
@@ -563,8 +558,8 @@
         </p>
     </div>
 </section>
-<section id="records" class="py-20 bg-[#050505] relative overflow-visible">
-    <div class="container mx-auto px-4 relative">
+<section id="records" class="py-20 bg-[#050505] relative overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10">
         <div class="text-center mb-16">
             <h2 class="text-4xl font-black text-white tracking-widest mb-4">TACTICAL RECORDS</h2>
             <div class="h-1 w-24 bg-[var(--spark-blue)] mx-auto shadow-[0_0_15px_var(--spark-blue)]"></div>
@@ -574,25 +569,24 @@
             
             <div class="side-wing wing-l md:block hidden">
                 <div class="wing-content">
-                    <div class="wing-tag">DATA_LINK</div>
+                    <div class="wing-tag text-[var(--spark-blue)]">LINK: STABLE</div>
                     <div class="mini-bar-group">
-                        <div class="m-bar animate-pulse"></div>
-                        <div class="m-bar" style="animation-delay: 0.2s"></div>
-                        <div class="m-bar" style="animation-delay: 0.4s"></div>
+                        <div class="m-bar animate-pulse bg-[var(--spark-blue)]"></div>
+                        <div class="m-bar bg-[var(--spark-blue)] opacity-40" style="width: 60%"></div>
+                        <div class="m-bar bg-[var(--spark-blue)] opacity-70" style="width: 85%"></div>
                     </div>
-                    <div class="text-[8px] font-mono mt-4 opacity-40">ENCRYPTING...</div>
+                    <div class="mt-8 text-[7px] font-mono text-[var(--spark-blue)] opacity-50">SCANNING_CORES...</div>
                 </div>
             </div>
 
             <div class="side-wing wing-r md:block hidden">
-                <div class="wing-content">
-                    <div class="wing-tag">SYS_STATUS</div>
-                    <div class="status-dot">ACTIVE</div>
-                    <div class="mini-bar-group">
-                        <div class="m-bar-r"></div>
-                        <div class="m-bar-r" style="width: 70%"></div>
+                <div class="wing-content text-right">
+                    <div class="wing-tag text-[var(--spark-purple)]">OS_v4.5_ACTIVE</div>
+                    <div class="flex flex-col items-end gap-1 mt-2">
+                        <div class="m-bar-r bg-[var(--spark-purple)] shadow-[0_0_8px_#a855f7]"></div>
+                        <div class="m-bar-r bg-[var(--spark-purple)] opacity-30" style="width: 40%"></div>
                     </div>
-                    <div class="text-[8px] font-mono mt-4 opacity-40">TEMP: 32°C</div>
+                    <div class="mt-8 text-[7px] font-mono text-[var(--spark-purple)]">CPU_LOAD: 24%</div>
                 </div>
             </div>
 
@@ -611,8 +605,8 @@
                     <div id="boot-overlay" class="boot-screen">
                         <div class="scan-line-loader"></div>
                         <div class="boot-text">
-                            <p class="animate-pulse">INITIALIZING SPARK_OS...</p>
-                            <span class="text-[10px] tracking-[5px] opacity-60">BIOMETRIC SCANNING</span>
+                            <p class="animate-pulse text-lg mb-2">INITIALIZING SPARK_OS...</p>
+                            <span class="text-[10px] tracking-[5px] opacity-60">VERIFYING BIOMETRIC DATA</span>
                         </div>
                         <button onclick="startMonitor()" class="boot-btn">ACCESS SYSTEM</button>
                     </div>
@@ -624,9 +618,14 @@
                 </div>
             </div>
 
-            <div class="monitor-pedestal md:block hidden">
+            <div class="monitor-pedestal md:flex hidden flex-col items-center mt-6">
                 <div class="pedestal-line"></div>
-                <div class="pedestal-text">TACTICAL_INTERFACE_V4.0_FINAL</div>
+                <div class="flex gap-8 mt-4">
+                    <div class="text-[9px] text-[var(--spark-blue)] border border-[var(--spark-blue)] px-3 py-1 opacity-50">CAM_01</div>
+                    <div class="text-[9px] text-[var(--spark-blue)] border border-[var(--spark-blue)] px-3 py-1 opacity-50">CAM_02</div>
+                    <div class="text-[9px] text-[var(--spark-purple)] border border-[var(--spark-purple)] px-3 py-1 shadow-[0_0_10px_#a855f7]">MAIN_FEED</div>
+                </div>
+                <div class="pedestal-text mt-4">TACTICAL_INTERFACE_v4.5_FINAL</div>
             </div>
         </div>
     </div>
@@ -854,17 +853,17 @@ if (menuBtn && mobileMenu) {
         });
     });
 }
-    function startMonitor() {
+  function startMonitor() {
     const overlay = document.getElementById('boot-overlay');
     const video = document.getElementById('monitor-video');
     
-    // 隱藏開機動畫層
+    // 淡出開機畫面
     overlay.classList.add('hide');
     
-    // 影片自動播放 (切換網址觸發)
-    const currentSrc = video.src;
-    if (!currentSrc.includes('autoplay=1')) {
-        video.src = currentSrc.replace("autoplay=0", "autoplay=1");
+    // 啟動影片播放 (如果原本是 autoplay=0 則切換)
+    let videoSrc = video.src;
+    if (videoSrc.includes('autoplay=0')) {
+        video.src = videoSrc.replace('autoplay=0', 'autoplay=1');
     }
 }
     </script>
